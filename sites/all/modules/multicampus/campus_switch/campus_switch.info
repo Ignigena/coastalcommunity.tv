@@ -1,0 +1,6 @@
+name = Campus Switcher
+description = Adds a campus switcher menu block.
+core = 7.x
+package = Multi-Campus
+
+dependencies[] = domain_alias

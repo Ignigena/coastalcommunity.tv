@@ -1,0 +1,23 @@
+name = Coastal
+description = Coastal Community Church website theme 2012
+core = 7.x
+engine = phptemplate
+screenshot = screenshot.png
+base theme = omega
+
+regions[header_top] = Header top
+regions[header] = Header
+regions[highlighted] = Highlighted
+regions[help] = Help
+regions[content] = Content
+regions[below_content] = Below content
+regions[sidebar_first] = Left sidebar
+regions[sidebar_second] = Right sidebar
+regions[footer] = Footer
+
+stylesheets[screen][] = bootstrap/css/bootstrap.min.css
+stylesheets[screen][] = bootstrap/css/bootstrap-responsive.min.css
+stylesheets[screen][] = zocial/zocial.css
+stylesheets[screen][] = css/design.css
+
+scripts[] = bootstrap/js/bootstrap.min.js

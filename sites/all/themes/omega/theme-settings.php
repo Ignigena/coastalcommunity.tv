@@ -18,7 +18,7 @@ function omega_form_system_theme_settings_alter(&$form, &$form_state, $form_id =
     return;
   }
 
-  if (variable_get('theme_' . $GLOBALS['theme'] . '_settings')) {
+  if (variable_get('theme_' . $GLOBALS['theme_key'] . '_settings')) {
     // Alert the user that the theme settings are served from a variable.
     drupal_set_message(t('The settings for this theme are currently served from a variable. You might want to export them to your .info file.'), 'warning', FALSE);
   }
@@ -170,10 +170,9 @@ function omega_form_system_theme_settings_alter(&$form, &$form_state, $form_id =
  * Form submit handler for the theme settings form.
  */
 function omega_theme_settings_form_submit($form, &$form_state) {
-  // Clear the theme settings cache.
+  // Clear the theme cache.
   $theme = $form_state['build_info']['args'][0];
-  cache_clear_all('theme_settings:' . $theme, 'cache');
-  cache_clear_all('omega_extensions:' . $theme, 'cache');
+  cache_clear_all('omega:' . $theme . ':', 'cache', TRUE);
 
   // We also need to clear the static right away.
   drupal_static_reset('omega_extensions');

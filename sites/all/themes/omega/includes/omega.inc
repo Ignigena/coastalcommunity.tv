@@ -49,11 +49,9 @@ function omega_theme_get_setting($setting_name, $default = NULL, $theme = NULL) 
       return $setting;
     }
   }
-  else {
+  elseif (isset($cache[$theme][$setting_name])) {
     // Retrieve the value from the cache.
-    if (isset($cache[$theme][$setting_name])) {
-      return $cache[$theme][$setting_name];
-    }
+    return $cache[$theme][$setting_name];
   }
 
   // Use the default value if the setting does not exist.
@@ -73,23 +71,24 @@ function omega_theme_get_setting($setting_name, $default = NULL, $theme = NULL) 
  */
 function omega_theme_trail($theme = NULL) {
   $theme = isset($theme) ? $theme : $GLOBALS['theme_key'];
-  $cache = &drupal_static(__FUNCTION__);
 
-  if (!isset($cache[$theme])) {
-    $cache[$theme] = array();
-
-    if ($theme == $GLOBALS['theme'] && isset($GLOBALS['theme_info']->base_themes)) {
-      $cache[$theme] = $GLOBALS['theme_info']->base_themes;
-    }
-
-    $themes = list_themes();
-    if (empty($cache[$theme]) && isset($themes[$theme]->info['base theme'])) {
-      $cache[$theme] = system_find_base_themes($themes, $theme);
-    }
-
-    // Add our current subtheme ($key) to that array.
-    $cache[$theme][$theme] = $themes[$theme]->info['name'];
+  if (($cache = &drupal_static(__FUNCTION__)) && isset($cache[$theme])) {
+    return $cache[$theme];
   }
+
+  $cache[$theme] = array();
+
+  if ($theme == $GLOBALS['theme'] && isset($GLOBALS['theme_info']->base_themes)) {
+    $cache[$theme] = $GLOBALS['theme_info']->base_themes;
+  }
+
+  $themes = list_themes();
+  if (empty($cache[$theme]) && isset($themes[$theme]->info['base theme'])) {
+    $cache[$theme] = system_find_base_themes($themes, $theme);
+  }
+
+  // Add our current subtheme ($key) to that array.
+  $cache[$theme][$theme] = $themes[$theme]->info['name'];
 
   return $cache[$theme];
 }
@@ -125,7 +124,7 @@ function omega_css_preprocessor($elements) {
  *
  * This prevents unnecessary sprouting of new CSS aggregation.
  *
- * @see drupal_build_css_cache().
+ * @see drupal_build_css_cache()
  */
 function omega_css_cache_media_queries($item) {
   $map = variable_get('drupal_css_cache_files', array());
@@ -137,8 +136,8 @@ function omega_css_cache_media_queries($item) {
     $base = file_create_url($item['data']);
     $base = substr($base, 0, strrpos($base, '/'));
 
-    if (substr($base, 0, strlen($GLOBALS['base_theme'])) == $GLOBALS['base_theme']) {
-      $base = substr($base, strlen($GLOBALS['base_theme']));
+    if (substr($base, 0, strlen($GLOBALS['base_root'])) == $GLOBALS['base_root']) {
+      $base = substr($base, strlen($GLOBALS['base_root']));
     }
 
     _drupal_build_css_path(NULL, $base . '/');
@@ -180,59 +179,114 @@ function omega_css_cache_media_queries($item) {
 }
 
 /**
- * Helper function for eliminating elements from an array using a simplified
- * regex pattern.
+ * Helper function for generating a regex from a list of paths.
  *
- * @param $elements
- *   The array of elements that should have some elements nuked.
- * @param $exclude
- *   An array of strings that should be matched against the keys of the array
- *   of elements.
+ * Generates a single regex from a list of file paths that can be used to match
+ * JS or CSS files using preg_grep() for example in hook_css_alter() or
+ * hook_js_alter(). The '*' (asterisk) character can be used as a wild-card.
  *
- * @return array
- *   The purged array.
+ * @param $paths
+ *   An array of file paths.
+ *
+ * @return string
+ *   The generated regex.
+ *
+ * @see hook_js_alter()
+ * @see hook_css_alter()
  */
-function omega_exclude_assets(&$elements, $exclude) {
-  // For optimization reasons we load the theme trail to check whether a
-  // namespace matches the machine-readable name of one of the themes in the
-  // trail.
-  $trail = omega_theme_trail();
-
-  foreach ($exclude as $item) {
-    $path = '';
+function omega_generate_path_regex($paths) {
+  foreach ($paths as &$item) {
     // The first segment (everything before the first slash) is the namespace.
+    // This rule only applies to local files... So if the namespace can not be
+    // mapped to a module, profile or theme engine we assume that the we are
+    // trying to target an external file.
     list($namespace) = explode('/', $item);
 
     // Check if the namespace refers to a file residing in the 'misc' folder.
-    if ($namespace == 'misc') {
-      $path = DRUPAL_ROOT . '/misc';
-    }
-    // Check if the namespace refers to a theme.
-    elseif (array_key_exists($namespace, $trail)) {
-      $path = drupal_get_path('theme', $namespace);
-    }
-    else {
-      // Otherwise, check if it refers to a module, profile or theme engine.
-      foreach (array('module', 'profile', 'theme_engine') as $type) {
-        if ($path = drupal_get_path($type, $namespace)) {
-          break;
+    if ($namespace != '*') {
+      if ($namespace == 'misc') {
+        $prefix = DRUPAL_ROOT . '/misc';
+        $item = substr_replace($item, $prefix, 0, strlen($namespace));
+      }
+      else {
+        // Otherwise, check if it refers to a theme, module, profile or theme
+        // engine.
+        foreach (array('theme', 'module', 'profile', 'theme_engine') as $type) {
+          // We can't use drupal_get_path() directly because that uses dirname()
+          // internally which returns '.' if no filename was found.
+          if ($filename = drupal_get_filename($type, $namespace)) {
+            $prefix = dirname($filename);
+            $item = substr_replace($item, $prefix, 0, strlen($namespace));
+            break;
+          }
         }
       }
     }
 
-    // If a namespace could be identified, use its path as a prefix, otherwise
-    // use the plain file path as provided.
-    $item = $path ? $path . '/' . substr($item, strlen($namespace) + 1) : $item;
+    // Escape any regex characters and turn asterisk wildcards into actual regex
+    // wildcards.
     $item = preg_quote($item, '/');
-    // Turn the * wildcards into actual regex wildcards and make sure that, if
-    // a .css file is targeted directly we are also removing the RTL version of
-    // that file.
-    $item = str_replace(array('\*', '\.css'), array('(.*)', '(\.css|-rtl\.css)'), $item);
-
-    // Look up all elements that match this exclusion pattern.
-    $filtered = preg_grep("/^$item$/", array_keys($elements));
-    $elements = array_diff_key($elements, array_flip($filtered));
+    $item = str_replace('\*', '(.*)', $item);
   }
+
+  return '/^(' . implode('|', $paths) . ')$/';
+}
+
+/**
+ * Helper function for eliminating elements from an array using a simplified
+ * regex pattern.
+ *
+ * @param $elements
+ *   The array of elements that should have some of its items removed.
+ * @param $regex
+ *   A regex as generated by omega_generate_path_regex().
+ */
+function omega_exclude_assets(&$elements, $regex) {
+  $mapping = omega_generate_asset_mapping($elements);
+
+  // Finally, implode the array of items to exclude into a proper regex and
+  // invoke in on the array of files to be excluded.
+  $elements = array_diff_key($elements, preg_grep($regex, $mapping));
+}
+
+/**
+ * Helper function for generating a map of assets based on the data attribute.
+ *
+ * We can not rely on the array keys of the JS and CSS file arrays in Drupal
+ * because in case of inline JS or CSS (which uses numerical array keys) and due
+ * to potential overrides of the 'data' attribute which holds the actual,
+ * reliable path of the file. This function returns a single-level array of
+ * reliable JS/CSS file paths using the original array keys as keys. Elements of
+ * type 'inline' or 'setting' are ignored.
+ *
+ * @param $elements
+ *   An array of JS or CSS files as given in hook_css_alter() or
+ *   hook_js_alter().
+ *
+ * @return array
+ *   A map of file paths generated from $elements.
+ *
+ * @see hook_js_alter()
+ * @see hook_css_alter()
+ */
+function omega_generate_asset_mapping($elements) {
+  $mapping = array();
+  foreach ($elements as $key => $item) {
+    if ($item['type'] == 'inline' || $item['type'] == 'setting') {
+      // Naturally, in-line CSS is not supported.
+      continue;
+    }
+
+    // We need to build an array containing just the 'data' attribute because
+    // that's the actual path of the file. The array key of the elements can
+    // be something else if someone is sneaky enough to use drupal_add_js() or
+    // drupal_add_css() with a bogus first argument (normally, that is the
+    // path to the file) and then specify the actual path through the 'data'
+    // attribute in the $options array.
+    $mapping[$key] = $item['data'];
+  }
+
+  return $mapping;
 }
 
 /**
@@ -260,40 +314,40 @@ function omega_exclude_assets(&$elements, $exclude) {
  */
 function omega_extensions($theme = NULL) {
   $theme = isset($theme) ? $theme : $GLOBALS['theme_key'];
-  $extensions = &drupal_static(__FUNCTION__);
 
-  if (!isset($extensions[$theme])) {
-    if (($cache = cache_get('omega_extensions:' . $theme)) !== FALSE) {
-      $extensions[$theme] = $cache->data;
-    }
-    else {
-      // Extensions can't be hidden.
-      $extensions[$theme] = omega_discovery('extension', $theme, TRUE);
+  if (($extensions = &drupal_static(__FUNCTION__)) && isset($extensions[$theme])) {
+    return $extensions[$theme];
+  }
 
-      foreach ($extensions[$theme] as $extension => &$info) {
-        // Make sure that the theme variable is never altered.
-        $context = $theme;
-        drupal_alter('omega_extension_info', $info, $context);
+  if (($cache = cache_get('omega:' . $theme . ':extensions')) !== FALSE) {
+    return $extensions[$theme] = $cache->data;
+  }
 
-        // Determine if the extension is enabled.
-        $info['enabled'] = omega_theme_get_setting('omega_toggle_extension_' . $extension, !empty($info['info']['enabled']));
+  // Extensions can't be hidden.
+  $extensions[$theme] = omega_discovery('extension', $theme);
 
-        // Check if all dependencies are met.
-        if ($info['enabled'] && !empty($info['info']['dependencies'])) {
-          foreach ($info['info']['dependencies'] as $dependency) {
-            $dependency = drupal_parse_dependency($dependency);
+  foreach ($extensions[$theme] as $extension => &$info) {
+    // Make sure that the theme variable is never altered.
+    $context = $theme;
+    drupal_alter('omega_extension_info', $info, $context);
 
-            if ((!$module = system_get_info('module', $dependency['name'])) || omega_check_incompatibility($dependency, $module['version'])) {
-              $info['enabled'] = FALSE;
-            }
-          }
+    // Determine if the extension is enabled.
+    $info['enabled'] = omega_theme_get_setting('omega_toggle_extension_' . $extension, !empty($info['info']['enabled']));
+
+    // Check if all dependencies are met.
+    if ($info['enabled'] && !empty($info['info']['dependencies'])) {
+      foreach ($info['info']['dependencies'] as $dependency) {
+        $dependency = drupal_parse_dependency($dependency);
+
+        if ((!$module = system_get_info('module', $dependency['name'])) || omega_check_incompatibility($dependency, $module['version'])) {
+          $info['enabled'] = FALSE;
         }
       }
-
-      // Write to the cache.
-      cache_set('omega_extensions:' . $theme, $extensions[$theme]);
     }
   }
+
+  // Write to the cache.
+  cache_set('omega:' . $theme . ':extensions', $extensions[$theme]);
 
   return $extensions[$theme];
 }
@@ -454,50 +508,46 @@ function omega_get_nested_value(&$object, array $parents, &$key_exists = NULL) {
 /**
  * Retrieves the info array for all available layouts.
  *
- * @param $theme
- *   (Optional) The key (machine-readable name) of a theme. Defaults to the key
- *   of the current theme.
- *
  * @return array
  *   An array of available layouts for the given theme.
  */
-function omega_layouts_info($theme = NULL) {
-  $theme = isset($theme) ? $theme : $GLOBALS['theme_key'];
-  $layouts = &drupal_static(__FUNCTION__);
+function omega_layouts_info() {
+  if (($layouts = &drupal_static(__FUNCTION__)) !== NULL) {
+    return $layouts;
+  }
 
-  if (!isset($layouts[$theme])) {
-    $layouts[$theme] = omega_discovery('layout', $theme);
+  // Try to retrieve the layouts definitions from cache.
+  if (($cache = cache_get('omega:layouts')) !== FALSE) {
+    return $layouts = $cache->data;
+  }
 
-    // A theme or base theme can explicitly restrict the available layouts to
-    // a subset defined through the .info file.
-    if ($filter = omega_theme_trail_info('layouts', TRUE, $theme)) {
-      $layouts[$theme] = array_intersect_key($layouts[$theme], array_flip($filter));
-    }
+  // Layouts do not have a specific theme scope.
+  $layouts = omega_discovery('layout', FALSE);
+  foreach ($layouts as $layout => &$info) {
+    $info['attached'] = array();
+    $info['template'] = isset($info['info']['template']) ? $info['info']['template'] : $layout;
+    $root = drupal_get_path('theme', $info['theme']);
 
-    foreach ($layouts[$theme] as $layout => &$info) {
-      $info['attached'] = array();
-
-      // Look up possible CSS and JS file overrides.
-      if (isset($info['info']['stylesheets'])) {
-        foreach ($info['info']['stylesheets'] as $media => $files) {
-          foreach ($files as $key => $file) {
-            $info['attached']['css'][$key] = array(
-              'media' => $media,
-              'data' => $info['path'] . '/' . $file,
-              'group' => CSS_THEME,
-              'every_page' => TRUE,
-              'weight' => -10,
-            );
+    if (isset($info['info']['stylesheets'])) {
+      foreach ($info['info']['stylesheets'] as $media => $files) {
+        foreach ($files as $key => $file) {
+          if (is_file($info['path'] . '/' . $file)) {
+            // First, check if the file exists in the layout's path.
+            $path = $info['path'] . '/' . $file;
           }
-        }
-      }
+          elseif (is_file($root . '/' . $file)) {
+            // Otherwise, check if the file exists in the theme's path.
+            $path = $root . '/' . $file;
+          }
+          else {
+            // The specified file does not exist.
+            continue;
+          }
 
-      // Look up possible CSS and JS file overrides.
-      if (isset($info['info']['scripts'])) {
-        foreach ($info['info']['scripts'] as $key => $file) {
-          $info['attached']['js'][$key] = array(
-            'data' => $info['path'] . '/' . $file,
-            'group' => JS_THEME,
+          $info['attached']['css']["$media:$key"] = array(
+            'data' => $path,
+            'media' => $media,
+            'group' => CSS_THEME,
             'every_page' => TRUE,
             'weight' => -10,
           );
@@ -505,13 +555,39 @@ function omega_layouts_info($theme = NULL) {
       }
     }
 
-    $context = $theme;
+    // Look up possible CSS and JS file overrides.
+    if (isset($info['info']['scripts'])) {
+      foreach ($info['info']['scripts'] as $key => $file) {
+        if (is_file($info['path'] . '/' . $file)) {
+          // First, check if the file exists in the layout's path.
+          $path = $info['path'] . '/' . $file;
+        }
+        elseif (is_file($root . '/' . $file)) {
+          // Otherwise, check if the file exists in the theme's path.
+          $path = $root . '/' . $file;
+        }
+        else {
+          // The specified file does not exist.
+          continue;
+        }
 
-    // Give modules and themes a chance to alter the layout info array.
-    drupal_alter('omega_layouts_info', $layouts[$theme], $context);
+        $info['attached']['js'][$key] = array(
+          'data' => $path,
+          'group' => JS_THEME,
+          'every_page' => TRUE,
+          'weight' => -10,
+        );
+      }
+    }
   }
 
-  return $layouts[$theme];
+  // Give modules and themes a chance to alter the layout info array.
+  drupal_alter('omega_layouts_info', $layouts);
+
+  // Cache the layout definitions in the database.
+  cache_set('omega:layouts', $layouts);
+
+  return $layouts;
 }
 
 /**
@@ -522,19 +598,16 @@ function omega_layouts_info($theme = NULL) {
  *   use an alternative page layout.
  */
 function omega_layout() {
-  $cache = &drupal_static(__FUNCTION__);
-
-  if (!isset($cache)) {
-    $cache = FALSE;
-    // Load the default layout from the theme settings.
-    $layout = omega_theme_get_setting('omega_layout', 'epiqo');
-    drupal_alter('omega_layout', $layout);
-
-    $registry = theme_get_registry();
-    if (isset($registry['page__layout__' . $layout]['layout'])) {
-      $cache = $registry['page__layout__' . $layout]['layout'];
-    }
+  if (($cache = &drupal_static(__FUNCTION__)) !== NULL) {
+    return $cache;
   }
+
+  // Load the default layout from the theme settings.
+  $layout = omega_theme_get_setting('omega_layout', 'simple');
+  drupal_alter('omega_layout', $layout);
+
+  $layouts = omega_layouts_info();
+  $cache = isset($layouts[$layout]) ? $layouts[$layout] : FALSE;
 
   return $cache;
 }
@@ -552,20 +625,17 @@ function omega_layout() {
  */
 function omega_theme_libraries_info($theme = NULL) {
   $theme = isset($theme) ? $theme : $GLOBALS['theme_key'];
-  $libraries = &drupal_static(__FUNCTION__);
 
-  if (!isset($libraries[$theme])) {
-    $libraries[$theme] = array();
+  // Check if the libraries have already been statically cached.
+  if (($libraries = &drupal_static(__FUNCTION__)) && isset($libraries[$theme])) {
+    return $libraries[$theme];
+  };
 
-    foreach (omega_invoke_all('omega_theme_libraries_info') as $library => $info) {
-      $libraries[$theme][$library] = $info;
-    }
+  $libraries[$theme] = omega_invoke_all('omega_theme_libraries_info');
 
-    $context = $theme;
-
-    // Give modules and themes a chance to alter the libraries info array.
-    drupal_alter('omega_theme_libraries_info', $libraries[$theme], $context);
-  }
+  $context = $theme;
+  // Give modules and themes a chance to alter the libraries info array.
+  drupal_alter('omega_theme_libraries_info', $libraries[$theme], $context);
 
   return $libraries[$theme];
 }
@@ -584,59 +654,60 @@ function omega_theme_libraries_info($theme = NULL) {
  *   An array containing the discovered definitions.
  */
 function omega_discovery($type, $theme = NULL) {
-  $discovery = &drupal_static(__FUNCTION__, array());
   $theme = isset($theme) ? $theme : $GLOBALS['theme_key'];
 
-  if (!isset($discovery[$theme][$type])) {
-    $discovery[$theme][$type] = array();
+  if (($discovery = &drupal_static(__FUNCTION__, array())) && isset($discovery[$theme][$type])) {
+    return $discovery[$theme][$type];
+  }
 
-    // Retrieve all themes from the theme trail of the given theme.
-    $trail = omega_theme_trail($theme);
+  $discovery[$theme][$type] = array();
 
-    // Collect paths to all sub-themes grouped by base themes. These will be
-    // used for filtering. This allows base themes to have sub-themes in its
-    // folder hierarchy without affecting the base themes template discovery.
-    $paths = array();
-    foreach ($trail as $key => $info) {
-      $info = system_get_info('theme', $key);
-      if (!empty($info->base_theme)) {
-        $paths[$info->base_theme][$info->name] = dirname($info->filename);
+  // Retrieve all themes from the theme trail of the given theme.
+  $themes = $theme === FALSE ? list_themes() : omega_theme_trail($theme);
+
+  // Collect paths to all sub-themes grouped by base themes. These will be
+  // used for filtering. This allows base themes to have sub-themes in its
+  // folder hierarchy without affecting the base themes template discovery.
+  $paths = array();
+  foreach ($themes as $key => $info) {
+    $info = system_get_info('theme', $key);
+    if (!empty($info->base_theme)) {
+      $paths[$info->base_theme][$info->name] = dirname($info->filename);
+    }
+  }
+  foreach ($paths as $basetheme => $subthemes) {
+    foreach ($subthemes as $subtheme => $path) {
+      if (isset($paths[$subtheme])) {
+        $paths[$basetheme] = array_merge($paths[$basetheme], $paths[$subtheme]);
       }
     }
-    foreach ($paths as $basetheme => $subthemes) {
-      foreach ($subthemes as $subtheme => $path) {
-        if (isset($paths[$subtheme])) {
-          $paths[$basetheme] = array_merge($paths[$basetheme], $paths[$subtheme]);
-        }
+  }
+
+  $strlen = strlen($type) + 1;
+  foreach ($themes as $key => $label) {
+    // Retrieve the array of paths that should be ignored for this theme.
+    $ignore = isset($paths[$key]) ? $paths[$key] : array();
+    $path = drupal_get_path('theme', $key);
+
+    // Support files without '.inc' extension for backwards compatibility.
+    foreach (file_scan_directory($path, '/\.' . $type . '(\.inc)?$/', array('key' => 'name')) as $name => $file) {
+      // Ignore sub-theme templates for the current theme.
+      if (strpos($file->uri, str_replace($ignore, '', $file->uri)) !== 0) {
+        continue;
       }
-    }
 
-    $strlen = strlen($type) + 1;
-    foreach ($trail as $key => $label) {
-      // Retrieve the array of paths that should be ignored for this theme.
-      $ignore = isset($paths[$key]) ? $paths[$key] : array();
-      $path = drupal_get_path('theme', $key);
+      if (substr($name, -$strlen) === '.' . $type) {
+        $name = substr($name, 0, strlen($name) - $strlen);
+      }
 
-      // Support files without '.inc' extension for backwards compatibility.
-      foreach (file_scan_directory($path, '/\.' . $type . '(\.inc)?$/', array('key' => 'name')) as $name => $file) {
-        // Ignore sub-theme templates for the current theme.
-        if (strpos($file->uri, str_replace($ignore, '', $file->uri)) !== 0) {
-          continue;
-        }
-
-        if (substr($name, -$strlen) === '.' . $type) {
-          $name = substr($name, 0, strlen($name) - $strlen);
-        }
-
-        if ($info = drupal_parse_info_file($file->uri)) {
-          $discovery[$theme][$type][$name] = array(
-            'name' => $name,
-            'path' => dirname($file->uri),
-            'file' => $file->uri,
-            'info' => $info,
-            'theme' => $key,
-          );
-        }
+      if ($info = drupal_parse_info_file($file->uri)) {
+        $discovery[$theme][$type][$name] = array(
+          'name' => $name,
+          'path' => dirname($file->uri),
+          'file' => $file->uri,
+          'info' => $info,
+          'theme' => $key,
+        );
       }
     }
   }

@@ -4,30 +4,46 @@
  * Implements hook_preprocess_block().
  */
 function omega_preprocess_block(&$variables) {
-  $variables['content_attributes_array']['class'][] = 'content';
-
+  // Add BEM style classes to blocks.
   if (!empty($variables['block_html_id'])) {
     $variables['attributes_array']['id'] = $variables['block_html_id'];
-    $variables['attributes_array']['class'][] = $variables['block_html_id'];
-
-    // Use a template with no wrapper for the page's main content.
-    if ($variables['block_html_id'] == 'block-system-main') {
-      $variables['theme_hook_suggestions'][] = 'block__minimal';
-    }
+    $variables['attributes_array']['class'][] = str_replace('block-', 'block--', $variables['block_html_id']);
   }
 
-  // Classes describing the position of the block within the region.
-  if ($variables['block_id'] == 1) {
-    $variables['attributes_array']['class'][] = 'first';
-  }
+  $css_module = drupal_clean_css_identifier($variables['block']->module);
+  $variables['attributes_array']['class'] = str_replace('block-' . $css_module, 'block--' . $css_module, $variables['attributes_array']['class']);
+  $variables['attributes_array']['class'] = str_replace('block-menu', 'block--menu', $variables['attributes_array']['class']);
 
-  // The 'last_in_region' property is set in omega_page_alter().
-  if (isset($variables['block']->last_in_region)) {
-    $variables['attributes_array']['class'][] = 'last';
-  }
+  $variables['title_attributes_array']['class'][] = 'block__title';
 
-  $variables['attributes_array']['class'][] = $variables['block_zebra'];
-  $variables['title_attributes_array']['class'][] = 'block-title';
+  $variables['content_attributes_array']['class'][] = 'block__content';
+
+  // Add template suggestions to appropriate blocks.
+  switch ($variables['block']->module) {
+    case 'system':
+      switch ($variables['block']->delta) {
+        case 'help':
+        case 'powered-by':
+          break;
+
+        case 'main':
+          // Use a template with no wrapper for the page's main content.
+          $variables['theme_hook_suggestions'][] = 'block__minimal';
+          break;
+
+        default:
+          // Any other "system" block is a menu block and should use block--nav.tpl.php
+          $variables['theme_hook_suggestions'][] = 'block__nav';
+          break;
+      }
+      break;
+
+    case 'menu':
+    case 'menu_block':
+      // Use block--nav.tpl.php template.
+      $variables['theme_hook_suggestions'][] = 'block__nav';
+      break;
+  }
 
   // Add Aria Roles via attributes.
   switch ($variables['block']->module) {

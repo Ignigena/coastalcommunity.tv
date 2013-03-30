@@ -4,9 +4,21 @@ screenshot = screenshot.png
 engine = phptemplate
 core = 7.x
 
-; Information added by drupal.org packaging script on 2013-01-28
-version = "7.x-4.0-alpha7"
+regions[header]         = Header
+regions[navigation]     = Navigation
+regions[highlighted]    = Highlighted
+regions[help]           = Help
+regions[content]        = Content
+regions[sidebar_first]  = First Sidebar
+regions[sidebar_second] = Second Sidebar
+regions[footer]         = Footer
+
+plugins[panels][layouts] = panels/layouts
+plugins[panels][styles] = panels/styles
+
+; Information added by drupal.org packaging script on 2013-03-15
+version = "7.x-4.0-beta1"
 core = "7.x"
 project = "omega"
-datestamp = "1359379108"
+datestamp = "1363311021"
 

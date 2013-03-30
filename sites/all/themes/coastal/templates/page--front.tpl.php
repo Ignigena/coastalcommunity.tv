@@ -90,7 +90,7 @@
 </header>
 
 <div id="main">
-  <div id="main-content" role="main" class="maxwidth">
+  <div id="main-content" role="main">
     <?php print render($page['highlighted']); ?>
     <a id="main-content-anchor"></a>
     <?php print render($title_prefix); ?>

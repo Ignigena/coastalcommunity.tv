@@ -90,13 +90,18 @@
 </header>
 
 <div id="main">
+  <div class="titlewrap">
+    <div class="maxwidth">
+      <?php print render($title_prefix); ?>
+      <?php if ($title): ?>
+        <h1 class="title" id="page-title"><?php print $title; ?></h1>
+      <?php endif; ?>
+    </div>
+  </div>
+
   <div id="main-content" role="main" class="maxwidth">
     <?php print render($page['highlighted']); ?>
     <a id="main-content-anchor"></a>
-    <?php print render($title_prefix); ?>
-    <?php if ($title): ?>
-      <h1 class="title" id="page-title"><?php print $title; ?></h1>
-    <?php endif; ?>
     <?php print render($title_suffix); ?>
     <?php print $messages; ?>
     <?php print render($tabs); ?>

@@ -454,6 +454,25 @@ background: -moz-linear-gradient(top,  #a6dde6 0%, #6d9299 100%); /* FF3.6+ */
   width: 40%;
 }
 
+.titlewrap {
+  background-color: #bcbdc0;
+}
+
+.title {
+  padding: 10px 0;
+}
+
+.page-connect-students .title {
+  background: url('../images/students.jpg') center center no-repeat;
+  background-color: transparent;
+  background-size: cover;
+  color: white;
+  text-shadow: black 1px 1px 2px;
+  padding: 10px;
+  padding-top: 100px;
+  text-align: right;
+}
+
 .l-region--footer {
   background: #231f20;
   margin-bottom: -10px;

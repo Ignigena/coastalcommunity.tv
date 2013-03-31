@@ -473,6 +473,23 @@ background: -moz-linear-gradient(top,  #a6dde6 0%, #6d9299 100%); /* FF3.6+ */
   text-align: right;
 }
 
+.page-connect-students .view-student-ministries .view-content {
+  margin-left: -20px;
+  text-align: center;
+}
+
+.page-connect-students .view-student-ministries .view-content .views-field-field-image {
+  margin: 15px 0 10px 0;
+}
+
+.page-connect-students .view-student-ministries .view-content .views-field-name {
+  font-size: 18px;
+}
+
+.page-connect-students .view-student-ministries .view-content .views-field-description {
+  font-size: 12px;
+}
+
 .l-region--footer {
   background: #231f20;
   margin-bottom: -10px;

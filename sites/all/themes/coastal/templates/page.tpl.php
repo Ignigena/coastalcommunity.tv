@@ -70,7 +70,7 @@
 ?>
 
 <header id="header" role="banner">
-  <div class="maxwidth">
+  <div class="container">
     <?php print render($page['header_top']); ?>
   
     <?php if ($logo): ?>
@@ -91,7 +91,7 @@
 
 <div id="main">
   <div class="titlewrap">
-    <div class="maxwidth">
+    <div class="container">
       <?php print render($title_prefix); ?>
       <?php if ($title): ?>
         <h1 class="title" id="page-title"><?php print $title; ?></h1>
@@ -99,7 +99,7 @@
     </div>
   </div>
 
-  <div id="main-content" role="main" class="maxwidth">
+  <div id="main-content" role="main" class="container">
     <?php print render($page['highlighted']); ?>
     <a id="main-content-anchor"></a>
     <?php print render($title_suffix); ?>
@@ -112,7 +112,7 @@
     <?php print render($page['content']); ?>
   </div>
   
-  <div id="below-content" class="maxwidth">
+  <div id="below-content" class="container">
     <div class="row-fluid">
       <?php print render($page['below_content']); ?>
     </div>

@@ -9,40 +9,6 @@ require_once dirname(__FILE__) . '/includes/omega.inc';
 require_once dirname(__FILE__) . '/includes/scripts.inc';
 
 if ($GLOBALS['theme'] === $GLOBALS['theme_key'] && ($GLOBALS['theme'] == 'omega' || (!empty($GLOBALS['base_theme_info']) && $GLOBALS['base_theme_info'][0]->name == 'omega'))) {
-  // Slightly hacky performance tweak for theme_get_setting(). This resides
-  // outside of any function declaration to make sure that it runs directly
-  // after the theme has been initialized.
-  //
-  // Instead of rebuilding the theme settings array on every page load we are
-  // caching the content of the static cache in the database after it has been
-  // built initially. This is quite a bit faster than running all the code in
-  // theme_get_setting() on every page.
-  //
-  // By checking whether the global 'theme' and 'theme_key' properties are
-  // identical we make sure that we don't interfere with any of the theme
-  // settings pages and only use this feature when actually rendering a page
-  // with this theme.
-  //
-  // @see theme_get_setting()
-  if (!$static = &drupal_static('theme_get_setting')) {
-    if ($cache = cache_get('omega:' . $GLOBALS['theme'] . ':settings')) {
-      // If the cache entry exists, populate the static theme settings array
-      // with its data. This prevents the theme settings from being rebuilt on
-      // every page load.
-      $static[$GLOBALS['theme']] = $cache->data;
-    }
-    else {
-      // Invoke theme_get_setting() with a random argument to build the theme
-      // settings array and populate the static cache.
-      theme_get_setting('foo');
-      // Extract the theme settings from the previously populated static cache.
-      $static = &drupal_static('theme_get_setting');
-
-      // Cache the theme settings in the database.
-      cache_set('omega:' . $GLOBALS['theme'] . ':settings', $static[$GLOBALS['theme']]);
-    }
-  }
-
   // Managing debugging (flood) messages and a few development tasks. This also
   // lives outside of any function declaration to make sure that the code is
   // executed before any theme hooks.
@@ -95,13 +61,6 @@ if ($GLOBALS['theme'] === $GLOBALS['theme_key'] && ($GLOBALS['theme'] == 'omega'
  * Implements hook_element_info_alter().
  */
 function omega_element_info_alter(&$elements) {
-  if (omega_extension_enabled('assets') && omega_theme_get_setting('omega_media_queries_inline', TRUE) && variable_get('preprocess_css', FALSE) && (!defined('MAINTENANCE_MODE') || MAINTENANCE_MODE != 'update')) {
-    // Place our custom CSS preprocessor
-    if ($position = array_search('drupal_pre_render_styles', $elements['styles']['#pre_render'])) {
-      array_splice($elements['styles']['#pre_render'], $position, 0, 'omega_css_preprocessor');
-    }
-  }
-
   $elements['scripts'] = array(
     '#items' => array(),
     '#pre_render' => array('omega_pre_render_scripts'),
@@ -117,8 +76,7 @@ function omega_css_alter(&$css) {
   $omega = drupal_get_path('theme', 'omega');
 
   // Exclude CSS files as declared in the theme settings.
-  if (omega_extension_enabled('assets') && $exclude = omega_theme_get_setting('omega_css_exclude')) {
-    $regex = omega_generate_path_regex($exclude);
+  if (omega_extension_enabled('assets') && $regex = omega_theme_get_setting('omega_css_exclude_regex')) {
     // Make sure that RTL styles are excluded as well when a file name has been
     // specified with it's full .css file extension.
     $regex = preg_replace('/\\\.css$/', '(\.css|-rtl\.css)', $regex);
@@ -361,8 +319,7 @@ function omega_js_alter(&$js) {
     return;
   }
 
-  if ($exclude = omega_theme_get_setting('omega_js_exclude')) {
-    $regex = omega_generate_path_regex($exclude);
+  if ($regex = omega_theme_get_setting('omega_js_exclude_regex')) {
     omega_exclude_assets($js, $regex);
   }
 
@@ -455,6 +412,11 @@ function omega_theme_registry_alter(&$registry) {
   // files to keep the main template.php file clean. This is really fast because
   // it uses the theme registry to cache the paths to the files that it finds.
   $trail = omega_theme_trail();
+
+  // Keep track of theme function include files that are not directly loaded
+  // into the theme registry. This is the case for previously unknown theme
+  // hook suggestion implementations.
+  $includes = array();
   foreach ($trail as $theme => $name) {
     // Remove the current element from the trail so we only iterate over
     // higher level themes during subsequent checks.
@@ -473,8 +435,11 @@ function omega_theme_registry_alter(&$registry) {
       foreach (file_scan_directory($path . '/' . $type, $mask) as $item) {
         $hook = strtr(substr($item->name, 0, $strlen), '-', '_');
 
-        // If there is no hook with that name, continue.
-        if (!array_key_exists($hook, $registry)) {
+        // If there is no hook with that name, continue. This does not apply to
+        // theme functions because if we want to support theme hook suggestions
+        // in .theme.inc files that have not previously been declared we need to
+        // run the full discovery for theme functions.
+        if (!array_key_exists($hook, $registry) && ($type !== 'theme' || strpos($hook, '__') === FALSE)) {
           continue;
         }
 
@@ -523,14 +488,27 @@ function omega_theme_registry_alter(&$registry) {
           continue;
         }
 
-        // By adding this file to the 'includes' array we make sure that it is
-        // available when the hook is executed.
-        $registry[$hook]['includes'][] = $item->uri;
+        // If we got this far and the following if() statement evaluates to true
+        // then that means that the theme function override that is currently
+        // being processed is a previously unknown theme hook suggestion.
+        if ($type == 'theme' && !array_key_exists($hook, $registry) && $separator = strpos($hook, '__')) {
+          $suggestion = $hook;
+          $hook = substr($hook, 0, $separator);
 
-        if ($type == 'theme') {
-          $registry[$hook]['type'] = $theme == $GLOBALS['theme'] ? 'theme_engine' : 'base_theme_engine';
-          $registry[$hook]['theme path'] = $path;
+          if (!isset($registry[$hook])) {
+            // Bail out here if the base hook does not exist.
+            continue;
+          }
 
+          // Register the theme hook suggestion.
+          $arg_name = isset($registry[$hook]['variables']) ? 'variables' : 'render element';
+          $registry[$suggestion] = array(
+            $map => $callback,
+            $arg_name => $registry[$hook][$arg_name],
+            'base hook' => $hook,
+          );
+        }
+        elseif ($type == 'theme') {
           // Inject our theme function. We will leave any potential 'template'
           // declarations in the registry as they don't hurt us anyways
           // because drupal gives precedence to theme functions.
@@ -540,6 +518,10 @@ function omega_theme_registry_alter(&$registry) {
           // Append the included preprocess hook to the array of functions.
           $registry[$hook][$map][] = $callback;
         }
+
+        // By adding this file to the 'includes' array we make sure that it is
+        // available when the hook is executed.
+        $registry[$hook]['includes'][] = $item->uri;
       }
     }
   }
@@ -749,8 +731,8 @@ function omega_omega_theme_libraries_info($theme) {
     'files' => array(
       'js' => array(
         $path . '/libraries/selectivizr/selectivizr.min.js' => array(
+          'browsers' => array('IE' => '(gte IE 6)&(lte IE 8)', '!IE' => FALSE),
           'weight' => 110,
-          'force header' => TRUE,
           'every_page' => TRUE,
         ),
       ),
@@ -762,8 +744,8 @@ function omega_omega_theme_libraries_info($theme) {
         'files' => array(
           'js' => array(
             $path . '/libraries/selectivizr/selectivizr.js' => array(
+              'browsers' => array('IE' => '(gte IE 6)&(lte IE 8)', '!IE' => FALSE),
               'weight' => 110,
-              'force header' => TRUE,
               'every_page' => TRUE,
             ),
           ),
@@ -815,8 +797,8 @@ function omega_omega_theme_libraries_info($theme) {
     'files' => array(
       'js' => array(
         $path . '/libraries/respond/respond.min.js' => array(
+          'browsers' => array('IE' => '(gte IE 6)&(lte IE 8)', '!IE' => FALSE),
           'weight' => 120,
-          'force header' => TRUE,
           'every_page' => TRUE,
         ),
       ),
@@ -828,8 +810,8 @@ function omega_omega_theme_libraries_info($theme) {
         'files' => array(
           'js' => array(
             $path . '/libraries/respond/respond.js' => array(
+              'browsers' => array('IE' => '(gte IE 6)&(lte IE 8)', '!IE' => FALSE),
               'weight' => 120,
-              'force header' => TRUE,
               'every_page' => TRUE,
             ),
           ),
@@ -902,8 +884,8 @@ function omega_omega_theme_libraries_info($theme) {
     'files' => array(
       'js' => array(
         $path . '/libraries/html5shiv/html5shiv.min.js' => array(
+          'browsers' => array('IE' => '(gte IE 6)&(lte IE 8)', '!IE' => FALSE),
           'weight' => 100,
-          'force header' => TRUE,
           'every_page' => TRUE,
         ),
       ),
@@ -915,8 +897,8 @@ function omega_omega_theme_libraries_info($theme) {
         'files' => array(
           'js' => array(
             $path . '/libraries/html5shiv/html5shiv.js' => array(
+              'browsers' => array('IE' => '(gte IE 6)&(lte IE 8)', '!IE' => FALSE),
               'weight' => 100,
-              'force header' => TRUE,
               'every_page' => TRUE,
             ),
           ),

@@ -17,7 +17,7 @@ function omega_drush_command() {
       'name' => dt('The name of your subtheme.'),
     ),
     'options' => array(
-      'destination' => dt('The destination of your subtheme. Defaults to "site:all" (sites/all/themes). May be one of "site:foo", "profile:bar" or "theme:baz" ("foo", "bar" and "baz" being the name of your site, profile or parent theme).'),
+      'destination' => dt('The destination of your subtheme. Defaults to "site:all" (sites/all/themes). May be one of "site:foo", "profile:bar" or "theme:baz" ("foo", "bar" and "baz" being the name of your site, profile or parent theme). May also have a third part for sub-pathing. For example, if using site:all:custom/cat, then the theme will be created in sites/all/themes/custom/cat/<name>.'),
       'machine-name' => dt('The machine-readable name of your subtheme. This will be auto-generated from the human-readable name if omitted.'),
       'starterkit' => dt('The starterkit that your subtheme should use. Defaults to "default".'),
       'basetheme' => dt('Specifies a custom base theme. Defaults to "omega".'),
@@ -102,7 +102,11 @@ function omega_drush_help($section) {
 /**
  * Implements drush_hook_COMMAND_validate().
  */
-function drush_omega_subtheme_validate() {
+function drush_omega_subtheme_validate($name = NULL) {
+  if (!isset($name)) {
+    return drush_set_error('OMEGA_MISSING_ARGUMENT', dt("You didn't specify a name for the subtheme."));
+  }
+
   // Rebuild the theme data so that we can safely check for the existence of
   // themes by using the information provided by list_themes().
   system_rebuild_theme_data();
@@ -130,7 +134,7 @@ function drush_omega_subtheme_validate() {
 
   if ($destination = drush_get_option('destination')) {
     // Check if the syntax of the destination is valid.
-    if (!is_string($destination) || !preg_match('/^(site|theme|profile):[a-z][a-z0-9_]*/', $destination)) {
+    if (!is_string($destination) || !preg_match('/^(site|theme|profile)(:(.+?)){1,2}$/', $destination)) {
       return drush_set_error('OMEGA_DESTINATION_INVALID', dt('The destination syntax (@destination) is invalid. Please use one of the following destination patterns (site, profile or theme): --destination="site:foo", --destination="profile:bar" or --destination="theme:baz".', array(
         '@destination' => $destination,
       )));
@@ -189,11 +193,7 @@ function drush_omega_subtheme_validate() {
 /**
  * Implements drush_hook_COMMAND().
  */
-function drush_omega_subtheme($name = NULL) {
-  if (!isset($name)) {
-    return drush_set_error('OMEGA_MISSING_ARGUMENT', dt("You didn't specify a name for the subtheme."));
-  }
-
+function drush_omega_subtheme($name) {
   // Try to generate a machine-readable name. If that fails, prompt for one.
   if (!$machine_name = drush_get_option('machine-name', drush_omega_generate_theme_name($name))) {
     drush_print(dt("Sorry, I couldn't generate a machine-readable name for @name. Please use the '--machine-name' option to specify it manually.", array(
@@ -248,7 +248,7 @@ function drush_omega_subtheme($name = NULL) {
   // Recursively rewrite the file names and contents of all the files that are
   // now in the subtheme's directory to represent the human- and
   // machine-readable names of the subtheme.
-  $search = array('{{ THEME }}', '{{ THEMENAME }}');
+  $search = array('/{{ THEME }}/', '/{{ THEMENAME }}/');
   $replace = array($machine_name, $name);
   if (!drush_omega_rewrite_recursive($temporary, $search, $replace)) {
     return drush_set_error('OMEGA_GENERATE_SUBTHEME', dt('Failed to generate subtheme.'));
@@ -312,7 +312,7 @@ function drush_omega_wizard() {
   }
   drush_set_option('starterkit', $starterkit);
 
-  // Let the user choose a destination. == 'Yes'
+  // Let the user choose a destination.
   if (!$destination = drush_omega_destination_choice(dt('Please choose a destination. This is where your sub-theme will be placed'))) {
     return;
   }
@@ -597,25 +597,28 @@ function drush_omega_guard($theme = NULL) {
  *   be resolved.
  */
 function drush_omega_resolve_destination($destination) {
-  list($type, $destination) = explode(':', $destination);
+  list($type, $destination, $custom) = explode(':', $destination);
+
+  // Add a '/' to the custom path suffix.
+  $custom = $custom ? '/' . $custom : '';
 
   switch($type) {
     case 'site':
       if (array_key_exists($destination, drush_omega_sites())) {
-        return 'sites/' . $destination . '/themes';
+        return 'sites/' . $destination . '/themes' . $custom;
       }
       break;
 
     case 'profile':
       require_once DRUPAL_ROOT . '/includes/install.core.inc';
       if (array_key_exists($destination, install_find_profiles())) {
-        return 'profiles/' . $destination . '/themes';
+        return 'profiles/' . $destination . '/themes' . $custom;
       }
       break;
 
     case 'theme':
       if (array_key_exists($destination, list_themes())) {
-        return drupal_get_path('theme', $destination);
+        return drupal_get_path('theme', $destination) . $custom;
       }
       break;
   }
@@ -775,33 +778,59 @@ function drush_omega_require_valid_theme_name($message, $default = NULL) {
  * @see str_replace()
  */
 function drush_omega_rewrite_recursive($path, $search, $replace) {
-  if ($path !== ($new = str_replace($search, $replace, $path))) {
-    // First, try to rename (move) the file if the name was changed.
+  if (!is_dir($path)) {
+    return drush_set_error('INVALID_PATH', dt('The given path @path is not a directory.', array(
+      '!path' => $path,
+    )));
+  }
+
+  // Try to rename (move) the file if the name was changed.
+  $original = basename($path);
+  if (($renamed = preg_replace($search, $replace, $original)) === NULL) {
+    return drush_set_error('REWRITE_FAILURE', dt('There was an error while trying to rewrite !path (!search to !replace)', array(
+      '!path' => $path,
+      '!search' => $search,
+      '!replace' => $replace,
+    )));
+  }
+
+  // Move (rename) if the file or directory name was changed.
+  if ($original !== $renamed) {
+    $new = dirname($path) . "/$renamed";
     if (!drush_move_dir($path, $new, TRUE)) {
       return FALSE;
     };
+
+    // Use the changed path from now on.
+    $path = $new;
   }
 
-  if (is_dir($new)) {
-    // If the file actually is a directory, proceed with the recursion.
-    $directory = dir($new);
-
-    while (FALSE !== ($read = $directory->read())) {
-      if ($read != '.' && $read != '..' ) {
-        if (!drush_omega_rewrite_recursive($new . '/' . $read, $search, $replace)) {
-          return FALSE;
-        }
-      }
+  // If the file actually is a directory, proceed with the recursion.
+  $directory = new DirectoryIterator($path);
+  foreach ($directory as $item) {
+    if ($item->isDot()) {
+      // Do not process '..' and '.'.
+      continue;
     }
 
-    $directory->close();
-  }
-  elseif (is_file($new)) {
-    // If it is a file, try to replace its contents.
-    $before = file_get_contents($new);
-    if ($before !== ($after = str_replace($search, $replace, $before))) {
-      if (drush_op('file_put_contents', $new, $after) === FALSE) {
-        return FALSE;
+    // Retrieve the path of the current item.
+    $pathname = $item->getPathname();
+    if ($item->isDir() && !drush_omega_rewrite_recursive($pathname, $search, $replace)) {
+      return FALSE;
+    }
+    elseif ($item->isFile()) {
+      // If it is a file, try to replace its contents.
+      $contents = file_get_contents($pathname);
+      if (($changed = preg_replace($search, $replace, $contents)) === NULL) {
+        return drush_set_error('REWRITE_FAILURE', dt('There was an error while trying to rewrite !path (!search to !replace)', array(
+          '!path' => $pathname,
+          '!search' => $search,
+          '!replace' => $replace,
+        )));
+      }
+
+      if ($contents !== $changed) {
+        file_put_contents($pathname, $changed);
       }
     }
   }

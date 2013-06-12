@@ -47,18 +47,18 @@
   <!--[if (IE 7)&(!IEMobile)]><html class="ie lt-ie9 lt-ie8" lang="<?php print $language->language; ?>" dir="<?php print $language->dir; ?>"><![endif]-->
   <!--[if IE 8]><html class="ie lt-ie9" lang="<?php print $language->language; ?>" dir="<?php print $language->dir; ?>"><![endif]-->
   <!--[if (gte IE 9)|(gt IEMobile 7)]><html class="ie" lang="<?php print $language->language; ?>" dir="<?php print $language->dir; ?>"<?php print $rdf_namespaces; ?>><![endif]-->
-  <![if !IE]><html lang="<?php print $language->language; ?>" dir="<?php print $language->dir; ?>"<?php print $rdf_namespaces; ?>><![endif]>
+  <!--[if !IE]><!--><html lang="<?php print $language->language; ?>" dir="<?php print $language->dir; ?>"<?php print $rdf_namespaces; ?>><!--<![endif]-->
 <?php else: ?>
   <html lang="<?php print $language->language; ?>" dir="<?php print $language->dir; ?>"<?php print $rdf_namespaces; ?>>
 <?php endif; ?>
-<head profile="<?php print $grddl_profile; ?>">
+<head>
   <title><?php print $head_title; ?></title>
   <?php print $head; ?>
   <?php print $styles; ?>
   <?php print $scripts; ?>
 </head>
 <body<?php print $attributes;?>>
-  <a href="#main-content-anchor" class="element-invisible element-focusable"><?php print t('Skip to main content'); ?></a>
+  <a href="#main-content" class="element-invisible element-focusable"><?php print t('Skip to main content'); ?></a>
   <?php print $page_top; ?>
   <?php print $page; ?>
   <?php print $page_bottom; ?>

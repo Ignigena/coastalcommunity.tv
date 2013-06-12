@@ -92,6 +92,7 @@
 <div id="main">
   <div class="titlewrap">
     <div class="container">
+      <?php print render($tabs); ?>
       <?php print render($title_prefix); ?>
       <?php if ($title): ?>
         <h1 class="title" id="page-title"><?php print $title; ?></h1>
@@ -103,13 +104,36 @@
     <?php print render($page['highlighted']); ?>
     <a id="main-content-anchor"></a>
     <?php print render($title_suffix); ?>
-    <?php print $messages; ?>
-    <?php print render($tabs); ?>
-    <?php print render($page['help']); ?>
-    <?php if ($action_links): ?>
-      <ul class="action-links"><?php print render($action_links); ?></ul>
-    <?php endif; ?>
-    <?php print render($page['content']); ?>
+    <div class="row">
+      <?php
+        $spancount = 12;
+        if (render($page['sidebar_first'])):
+          $spancount -= 3;
+      ?>
+      <div class="sidebar span3">
+        <div data-spy="affix" data-offset-top="200">
+          <?php print render($page['sidebar_first']); ?>
+        </div>
+      </div>
+      <?php
+        endif;
+        
+        if (render($page['sidebar_second'])) $spancount -= 3;
+      ?>
+      <div class="span<?php print $spancount; ?>">
+        <?php if ($action_links): ?>
+          <ul class="action-links"><?php print render($action_links); ?></ul>
+        <?php endif; ?>
+        <?php print $messages; ?>
+        <?php print render($page['help']); ?>
+        <?php print render($page['content']); ?>
+      </div>
+      <?php if (render($page['sidebar_second'])): ?>
+      <div class="sidebar span3">
+        <?php print render($page['sidebar_second']); ?>
+      </div>
+      <?php endif; ?>
+    </div>
   </div>
   
   <div id="below-content" class="container">
@@ -122,13 +146,6 @@
     <div id="navigation">
       <?php print render($page['navigation']); ?>
     </div>
-  <?php endif; ?>
-
-  <?php if (render($page['sidebar_first']) || render($page['sidebar_second'])): ?>
-    <aside class="sidebars">
-      <?php print render($page['sidebar_first']); ?>
-      <?php print render($page['sidebar_second']); ?>
-    </aside>
   <?php endif; ?>
 </div>
 

@@ -104,7 +104,7 @@
     <?php print render($page['highlighted']); ?>
     <a id="main-content-anchor"></a>
     <?php print render($title_suffix); ?>
-    <div class="row">
+    <div class="row-fluid">
       <?php
         $spancount = 12;
         if (render($page['sidebar_first'])):

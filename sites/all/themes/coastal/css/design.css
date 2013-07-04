@@ -226,6 +226,11 @@ body > .navbar .brand {
   height: 40px;
   width: 212px;
   cursor: pointer;
+  color: #555;
+}
+
+#widget_pager_bottom_homepage_slider-page > div:hover {
+  color: black;
 }
 
 #widget_pager_bottom_homepage_slider-page > div.active {
@@ -609,6 +614,7 @@ background: -moz-linear-gradient(top,  #a6dde6 0%, #6d9299 100%); /* FF3.6+ */
 
 .node-type-events #main {
   background: #1d191a;
+  border-bottom: 51px solid #bcbdc0;
 }
 
 .node-type-events .field--type-image img {
@@ -620,4 +626,50 @@ background: -moz-linear-gradient(top,  #a6dde6 0%, #6d9299 100%); /* FF3.6+ */
 .node-type-events .field--name-body {
   padding: 20px 0;
   color: whitesmoke;
+}
+
+.node-type-events .ui-tabs {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.node-type-events .ui-tabs .ui-tabs-nav {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font-family: Lato;
+  text-transform: uppercase;
+  font-size: 20px;
+}
+
+.node-type-events .ui-tabs .ui-tabs-nav li a {
+  padding: 15px 25px;
+  font-weight: 300 !important;
+}
+
+.node-type-events .ui-tabs .ui-tabs-nav li.ui-tabs-selected {
+  border-radius: 0;
+  border: 0;
+  background: #00aeef; /* Old browsers */
+  background: -moz-linear-gradient(top,  #00aeef 0%, #0091c8 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#00aeef), color-stop(100%,#0091c8)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #00aeef 0%,#0091c8 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #00aeef 0%,#0091c8 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #00aeef 0%,#0091c8 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  #00aeef 0%,#0091c8 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00aeef', endColorstr='#0091c8',GradientType=0 ); /* IE6-9 */
+}
+
+.node-type-events .ui-tabs .ui-tabs-nav li.ui-tabs-selected a {
+  color: white;
+}
+
+.node-type-events .ui-tabs-nav.ui-widget-header .ui-state-default {
+  background: transparent;
+  border: 0;
+}
+
+#block-quicktabs-event-toolbox {
+  margin-top: -72px;
 }

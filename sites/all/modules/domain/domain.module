@@ -2441,12 +2441,15 @@ function domain_form_alter(&$form, &$form_state, $form_id) {
       '#collapsible' => TRUE,
       '#collapsed' => FALSE,
       '#group' => variable_get('domain_vertical_tab', 0) ? 'additional_settings' : '',
+      '#attributes' => array(
+        'class' => array('domain-access-options-form'),
+      ),
     );
     $form['domain']['domain_site'] = array(
       '#type' => 'checkbox',
       '#title' => t('Send to all affiliates'),
       '#required' => FALSE,
-      '#description' => t('Select if this content can be shown to all affiliates. This setting will override the options below, but you must still select a domain that "owns" this content.'),
+      '#description' => t('Select if this content can be shown to all affiliates.'),
       '#default_value' => (isset($form['#node']->domain_site)) ? $form['#node']->domain_site : $default_domain_site,
     );
     $form['domain']['domains'] = array(
@@ -2456,6 +2459,9 @@ function domain_form_alter(&$form, &$form_state, $form_id) {
       '#required' => TRUE,
       '#description' => t('Select which affiliates can access this content.'),
       '#default_value' => (isset($form['#node']->domains)) ? $form['#node']->domains : $defaults['domain_id'],
+      '#attached' => array(
+        'js' => array(drupal_get_path('module', 'domain') . '/domain.form.js'),
+      ),
     );
     if ($format) {
       $form['domain']['domains']['#multiple'] = TRUE;

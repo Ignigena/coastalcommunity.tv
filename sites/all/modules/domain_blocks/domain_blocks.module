@@ -12,11 +12,11 @@
  * Implements hook_help().
  * Display help and module information
  * @param string $path
- * which path of the site we're displaying help
+ *    which path of the site we're displaying help
  * @param array $arg
- * array that holds the current path as would be returned from arg() function
+ *    array that holds the current path as would be returned from arg() function
  * @return string
- * help text for the path
+ *    help text for the path
  */
 function domain_blocks_help($path, $arg) {
   $output = '';
@@ -51,7 +51,7 @@ function domain_blocks_save($module, $delta, $current_domains, $previous_domains
           'module' => $module,
           'delta' => $delta,
           'realm' => $realm,
-          'domain_id' => 0,
+          'domain_id' => domain_default_id(),
         ))
         ->execute();
     }
@@ -64,7 +64,7 @@ function domain_blocks_save($module, $delta, $current_domains, $previous_domains
           'module' => $module,
           'delta' => $delta,
           'realm' => $realm,
-          'domain_id' => 0,
+          'domain_id' => domain_default_id(),
         ))
         ->execute();
     }
@@ -103,7 +103,7 @@ function domain_blocks_save($module, $delta, $current_domains, $previous_domains
           ->condition('module', $module)
           ->condition('delta', $delta)
           ->condition('realm', $realm)
-          ->condition('domain_id', $domains_to_be_removed)
+          ->condition('domain_id', $domains_to_be_removed, 'IN')
           ->execute();
         }
       }
@@ -131,17 +131,24 @@ function domain_blocks_save($module, $delta, $current_domains, $previous_domains
  * Implements hook_form_alter().
  */
 function domain_blocks_form_alter(&$form, &$form_state, $form_id) {
-  if (in_array($form_id, array('block_admin_configure', 'block_box_form', 'block_add_block_form'))) {
+  if (in_array($form_id, array('block_admin_configure', 'block_add_block_form', 'menu_block_add_block_form'))) {
     // If the user is a site admin, show the form, otherwise pass it silently.
     if (user_access('set domain access')) {
-      $module = $form['module']['#value'];
-      $delta = $form['delta']['#value'];
+      if (isset($form['module']['#value'])) {
+        $module = $form['module']['#value'];
+        $delta = $form['delta']['#value'];
+      }
+      else {
+        $module = 'block';
+        $delta = $form['bid']['#value'];
+      }
       $form['visibility']['domain_vis_settings'] = array(
         '#type' => 'fieldset',
         '#title' => t('Domains'),
         '#collapsible' => TRUE,
         '#collapsed' => FALSE,
         '#weight' => 0,
+        '#group' => 'visibility',
       );
 
       $previous_block_domains = _domain_blocks_load($module, $delta);
@@ -156,8 +163,7 @@ function domain_blocks_form_alter(&$form, &$form_state, $form_id) {
       $options = array();
       $format = domain_select_format();
       foreach (domain_domains() as $data) {
-        // Cannot pass zero in checkboxes.
-        ($data['domain_id'] == 0) ? $key = -1 : $key = $data['domain_id'];
+        $key = $data['domain_id'];
         // The domain must be valid or accessible for the current user
         if ($data['valid'] || user_access('administer domains') || user_access('access inactive domains')) {
           $options[$key] = $data['sitename'];
@@ -168,13 +174,13 @@ function domain_blocks_form_alter(&$form, &$form_state, $form_id) {
         '#title' => t('Display on'),
         '#options' => $options,
         '#required' => FALSE,
-        '#description' => t('Limit block display to these affiliates. This block is visible on all domains by default using this theme.'),
+        '#description' => t('Limit block display to selected affiliates. When no affiliates are selected this block is visible on all domains by default.'),
         '#default_value' => $block_domains,
       );
 
       if ($format) {
-        $form['domain_vis_settings']['domain_blocks']['#multiple'] = TRUE;
-        $form['domain_vis_settings']['domain_blocks']['#size'] = count($options) > 10 ? 10 : count($options);
+        $form['visibility']['domain_vis_settings']['domain_blocks']['#multiple'] = TRUE;
+        $form['visibility']['domain_vis_settings']['domain_blocks']['#size'] = count($options) > 10 ? 10 : count($options);
       }
 
       $form['visibility']['domain_vis_settings']['previous_domain_blocks'] = array(
@@ -185,7 +191,7 @@ function domain_blocks_form_alter(&$form, &$form_state, $form_id) {
     }
   }
   // Submit handler for user defined block deletion
-  if ($form_id == 'block_box_delete') {
+  if ($form_id == 'block_custom_block_delete') {
     $form['#submit'][] = 'domain_blocks_delete_submit';
   }
   // Blocks overview form submit
@@ -195,10 +201,16 @@ function domain_blocks_form_alter(&$form, &$form_state, $form_id) {
 }
 
 /**
- * Forms api callback. Submit function
+ * Forms API submit callback called from domain_blocks_form_alter().
  */
 function domain_blocks_form_submit($form, &$form_state) {
   $values = $form_state['values'];
+  if (!isset($values['module'])) {
+    $values['module'] = 'block';
+  }
+  if (!isset($values['delta'])) {
+    $values['delta'] = $values['bid'];
+  }
   // Delta may be zero for other modules than block.
   if (!$values['delta'] && $values['module'] == 'block') {
     $values['delta'] = db_query("SELECT MAX(bid) FROM {block_custom}")->fetchField();
@@ -207,9 +219,6 @@ function domain_blocks_form_submit($form, &$form_state) {
   if (!empty($values['domain_blocks'])) {
     foreach ($values['domain_blocks'] as $single_domain_id => $domain_enabled) {
       if ($domain_enabled) {
-        if ($single_domain_id == -1) {
-          $single_domain_id = 0;
-        }
         $enabled_domains[] = $single_domain_id;
       }
     }
@@ -241,7 +250,7 @@ function domain_blocks_admin_display_submit($form, &$form_state) {
     'module' => $block->module,
     'delta' => $block->delta,
     'realm' => 'domain_site',
-    'domain_id' => 0,
+    'domain_id' => domain_default_id(),
   ))
   ->execute();
   }
@@ -252,10 +261,13 @@ function domain_blocks_admin_display_submit($form, &$form_state) {
  * This is equivalent of db_rewrite_sql() back in D6
  */
 function domain_blocks_block_list_alter(&$blocks) {
-  global $_domain, $theme_key;
+  global $theme_key;
+  $_domain = domain_get_domain();
   $block_domains = array();
+  // If the realm for a block is domain_site then that block is to be displayed 
+  // on all domains regardless of the value of domain_id.
   $result = db_query("SELECT domain_id, realm, module, delta FROM {domain_blocks} WHERE
-  (domain_id = :domain_id AND realm = 'domain_id') OR (domain_id = 0 AND realm = 'domain_site')",
+  (domain_id = :domain_id AND realm = 'domain_id') OR (realm = 'domain_site')",
   array(':domain_id' => $_domain['domain_id']));
   foreach ($result as $record) {
     $block_domains[$record->module][$record->delta] = TRUE;
@@ -315,21 +327,9 @@ function _domain_blocks_load($module, $delta) {
 }
 
 /**
- * Implements hook_domainupdate().
+ * Implements hook_domain_delete().
  */
-function domain_blocks_domainupdate($op, $domain, $edit = array()) {
-  switch ($op) {
-    case 'delete':
-      // remove records
-      _domain_blocks_delete($domain);
-    case 'update':
-    case 'insert':
-    default:
-      break;
-  }
-}
-
-function _domain_blocks_delete($domain) {
+function domain_blocks_domain_delete($domain, $form_values = array()) {
   db_delete('domain_blocks')
     ->condition('domain_id', $domain['domain_id'])
     ->condition('realm', 'domain_id')

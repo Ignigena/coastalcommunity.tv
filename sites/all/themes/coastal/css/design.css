@@ -602,3 +602,22 @@ background: -moz-linear-gradient(top,  #a6dde6 0%, #6d9299 100%); /* FF3.6+ */
   font-family: Lato;
   text-transform: uppercase;
 }
+
+.node-type-events .titlewrap {
+  display: none;
+}
+
+.node-type-events #main {
+  background: #1d191a;
+}
+
+.node-type-events .field--type-image img {
+  width: 65%;
+  float: left;
+  margin-right: 20px;
+}
+
+.node-type-events .field--name-body {
+  padding: 20px 0;
+  color: whitesmoke;
+}

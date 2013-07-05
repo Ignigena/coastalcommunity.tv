@@ -609,7 +609,9 @@ background: -moz-linear-gradient(top,  #a6dde6 0%, #6d9299 100%); /* FF3.6+ */
 }
 
 .node-type-events .titlewrap {
-  display: none;
+  margin-bottom: 0;
+  background: #333;
+  color: whitesmoke;
 }
 
 .node-type-events #main {

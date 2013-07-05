@@ -709,22 +709,23 @@ background: -moz-linear-gradient(top,  #a6dde6 0%, #6d9299 100%); /* FF3.6+ */
   position: absolute;
   font-size: 11px;
   background-color: #f8f8f8;
-background-image: -webkit-gradient(linear,left top,left bottom,from(#f8f8f8),to(#ececec));
-background-image: -webkit-linear-gradient(top,#f8f8f8,#ececec);
-background-image: -moz-linear-gradient(top,#f8f8f8,#ececec);
-background-image: -ms-linear-gradient(top,#f8f8f8,#ececec);
-background-image: -o-linear-gradient(top,#f8f8f8,#ececec);
-background-image: linear-gradient(top,#f8f8f8,#ececec);
-filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#f8f8f8',EndColorStr='#ececec');
-border: 1px solid #c6c6c6;
--moz-border-radius: 2px;
--o-border-radius: 2px;
--webkit-border-radius: 2px;
-border-radius: 2px;
-padding: 0 10px;
+  background-image: -webkit-gradient(linear,left top,left bottom,from(#f8f8f8),to(#ececec));
+  background-image: -webkit-linear-gradient(top,#f8f8f8,#ececec);
+  background-image: -moz-linear-gradient(top,#f8f8f8,#ececec);
+  background-image: -ms-linear-gradient(top,#f8f8f8,#ececec);
+  background-image: -o-linear-gradient(top,#f8f8f8,#ececec);
+  background-image: linear-gradient(top,#f8f8f8,#ececec);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#f8f8f8',EndColorStr='#ececec');
+  border: 1px solid #c6c6c6;
+  -moz-border-radius: 2px;
+  -o-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  padding: 0 10px;
 }
 
 div.jp-interface {
+  z-index: 10;
   background-color: #ffffff;
   background-image: -webkit-gradient(linear,left top,left bottom,from(#ffffff),to(#ececec));
   background-image: -webkit-linear-gradient(top,#ffffff,#ececec);
@@ -734,9 +735,77 @@ div.jp-interface {
   background-image: linear-gradient(top,#ffffff,#ececec);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#ffffff',EndColorStr='#ececec');
   border: 1px solid #bbb;
--moz-border-radius: 2px;
--o-border-radius: 2px;
--webkit-border-radius: 2px;
-border-radius: 2px;
-padding: 0 10px;
+  -moz-border-radius: 2px;
+  -o-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  padding: 0 10px;
+}
+
+div.jp-interface a:hover {
+  text-decoration: none;
+}
+
+a.jp-mute,
+a.jp-mute:hover,
+a.jp-unmute,
+a.jp-unmute:hover {
+  background: none;
+}
+
+div.jp-audio div.jp-type-playlist a.jp-mute,
+div.jp-audio div.jp-type-playlist a.jp-unmute {
+  top: 30px;
+  left: 345px;
+  width: auto;
+  height: auto;
+  font-size: 14px;
+}
+
+div.jp-audio div.jp-type-playlist div.jp-volume-bar {
+  left: 360px;
+}
+
+div.jp-interface ul.jp-controls a {
+  text-indent: 0;
+}
+
+div.jp-audio div.jp-type-playlist div.jp-progress,
+div.jp-audio div.jp-type-playlist div.jp-current-time,
+div.jp-audio div.jp-type-playlist div.jp-duration {
+  width: 165px;
+  font-size: 9px;
+}
+
+div.jp-audio div.jp-type-playlist a.jp-play, div.jp-audio div.jp-type-playlist a.jp-pause {
+  width: auto;
+  height: auto;
+  background: none;
+  font-size: 30px;
+  top: 25px;
+  left: 55px;
+}
+
+div.jp-audio div.jp-type-playlist a.jp-previous {
+  width: auto;
+  height: auto;
+  background: transparent;
+  top: 30px;
+}
+
+div.jp-audio div.jp-type-playlist a.jp-next {
+  width: auto;
+  height: auto;
+  background: transparent;
+  top: 30px;
+  left: 95px;
+}
+
+div.jp-audio div.jp-type-playlist a.jp-stop {
+  width: auto;
+  height: auto;
+  background: transparent;
+  top: 29px;
+  left: 130px;
+  font-size: 15px;
 }

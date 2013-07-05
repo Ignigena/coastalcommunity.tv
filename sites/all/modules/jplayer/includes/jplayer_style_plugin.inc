@@ -112,7 +112,7 @@ class jplayer_style_plugin extends views_plugin_style {
         }
 
         $this->view->row_index = $row_index;
-        $label = trim(strip_tags($this->row_plugin->render($row)));
+        $label = trim($this->row_plugin->render($row));
         if (empty($label)) {
           $label = basename($filepath);
         }

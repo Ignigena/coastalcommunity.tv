@@ -170,7 +170,7 @@ function jplayer_sort_files($raw_files = array(), $player_id, $type = 'single') 
     if (isset($file) && $file['type'] == 'audio') {
       $files[][$file['ext']] = $file['url'];
       $extensions[] = $file['ext'];
-      $playlist[] = l($file['label'], $file['url'], array('attributes' => array('id' => $player_id . '_item_' . $num, 'tabindex' => 1)));
+      $playlist[] = l($file['label'], $file['url'], array('html' => TRUE, 'attributes' => array('id' => $player_id . '_item_' . $num, 'tabindex' => 1)));
       $num++;
     }
     elseif (isset($file) && $file['type'] == 'video') {

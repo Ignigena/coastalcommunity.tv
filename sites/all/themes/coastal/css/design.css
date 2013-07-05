@@ -648,6 +648,25 @@ background: -moz-linear-gradient(top,  #a6dde6 0%, #6d9299 100%); /* FF3.6+ */
   font-weight: 300 !important;
 }
 
+.node-type-events .ui-tabs .ui-tabs-panel {
+  padding: 25px 0;
+}
+
+.node-type-events div.jp-audio {
+  width: auto;
+}
+
+.node-type-events div.jp-playlist {
+  background: transparent;
+  border: 0;
+}
+
+.node-type-events div.jp-audio div.jp-type-playlist div.jp-interface {
+  float: left;
+  width: 420px;
+  margin-right: 25px;
+}
+
 .node-type-events .ui-tabs .ui-tabs-nav li.ui-tabs-selected {
   border-radius: 0;
   border: 0;

@@ -628,10 +628,15 @@ background: -moz-linear-gradient(top,  #a6dde6 0%, #6d9299 100%); /* FF3.6+ */
   color: whitesmoke;
 }
 
+#below {
+  position: relative;
+}
+
 .node-type-events .ui-tabs {
   border: 0;
   padding: 0;
   background: transparent;
+  position: static;
 }
 
 .node-type-events .ui-tabs .ui-tabs-nav {
@@ -808,4 +813,15 @@ div.jp-audio div.jp-type-playlist a.jp-stop {
   top: 29px;
   left: 130px;
   font-size: 15px;
+}
+
+#qt-event_toolbox-ui-tabs3 {
+  height: 231px;
+}
+
+#qt-event_toolbox-ui-tabs3 #block-views-locations-block {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
 }

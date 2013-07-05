@@ -136,13 +136,13 @@
     </div>
   </div>
 </div>
-
-<div id="below-content" class="container">
-  <div class="row-fluid">
-    <?php print render($page['below_content']); ?>
+<div id="below">
+  <div id="below-content" class="container">
+    <div class="row-fluid">
+      <?php print render($page['below_content']); ?>
+    </div>
   </div>
 </div>
-
 <?php if (render($page['navigation'])): ?>
   <div id="navigation">
     <?php print render($page['navigation']); ?>

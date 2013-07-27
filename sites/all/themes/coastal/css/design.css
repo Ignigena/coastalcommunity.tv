@@ -831,3 +831,15 @@ div.jp-audio div.jp-type-playlist a.jp-stop {
 .contextual-links-region.block--quicktabs-event-toolbox {
   position: static;
 }
+
+.node-type-events .view-id-registration_form .field--name-body {
+  color: black;
+}
+
+#qt-event_toolbox-ui-tabs4 {
+  padding: 0;
+}
+
+.view-id-registration_form header {
+  display: none;
+}

@@ -11,9 +11,9 @@ files[] = includes/smart_ip.region_lookup.inc
 files[] = includes/smart_ip.tokens.inc
 files[] = includes/IP2Location.inc
 configure = admin/config/people/smart_ip
-; Information added by drupal.org packaging script on 2013-06-29
-version = "7.x-2.1"
+; Information added by drupal.org packaging script on 2013-07-19
+version = "7.x-2.2"
 core = "7.x"
 project = "smart_ip"
-datestamp = "1372504551"
+datestamp = "1374253278"
 

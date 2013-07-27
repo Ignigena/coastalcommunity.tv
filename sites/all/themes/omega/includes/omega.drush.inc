@@ -5,7 +5,9 @@
  * Please supply a file description.
  */
 
-require_once dirname(__FILE__) . '/omega.inc';
+if (!function_exists('omega_theme_get_setting')) {
+  require_once dirname(__FILE__) . '/omega.inc';
+}
 
 /**
  * Implements hook_drush_command().
@@ -462,7 +464,7 @@ function drush_omega_guard($theme = NULL) {
   }
   elseif (!version_compare($matches[1], '1.8', '>=')) {
     // Ruby is outdated.
-    return drush_set_error(dt('The installed version of Ruby (@version) is outdated. Please upgrade to version 1.9 or newever.', array(
+    return drush_set_error(dt('The installed version of Ruby (@version) is outdated. Please upgrade to version 1.9 or newer.', array(
       '@version' => $matches[1],
     )));
   }
@@ -477,7 +479,7 @@ function drush_omega_guard($theme = NULL) {
   }
   elseif (!version_compare($matches[0], '1.8', '>=')) {
     // Rubygems is outdated.
-    return drush_set_error(dt('The installed version of Rubygems (@version) is outdated. Please upgrade to version 1.8 or newever.', array(
+    return drush_set_error(dt('The installed version of Rubygems (@version) is outdated. Please upgrade to version 1.8 or newer.', array(
       '@version' => $matches[0],
     )));
   }
@@ -492,7 +494,7 @@ function drush_omega_guard($theme = NULL) {
   }
   elseif (!version_compare($matches[1], '1.2', '>=')) {
     // Bundler is outdated.
-    return drush_set_error(dt('The installed version of Bundler (@version) is outdated. Please upgrade to version 1.2 or newever.', array(
+    return drush_set_error(dt('The installed version of Bundler (@version) is outdated. Please upgrade to version 1.2 or newer.', array(
       '@version' => $matches[1],
     )));
   }
@@ -523,8 +525,7 @@ function drush_omega_guard($theme = NULL) {
   }
 
   // This is the command for running guard through bundler.
-  $command = 'bundle exec guard --no-color --no-interactions';
-
+  $command = 'bundle exec guard';
   if (drush_get_option('screen')) {
     drush_shell_exec('screen --version');
     if (!preg_match('/^Screen version/', reset(drush_shell_exec_output()))) {

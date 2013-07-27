@@ -583,9 +583,8 @@ function omega_discovery($type, $theme = NULL) {
   // folder hierarchy without affecting the base themes template discovery.
   $paths = array();
   foreach ($themes as $key => $info) {
-    $info = system_get_info('theme', $key);
     if (!empty($info->base_theme)) {
-      $paths[$info->base_theme][$info->name] = dirname($info->filename);
+      $paths[$info->base_theme][$key] = dirname($info->filename);
     }
   }
   foreach ($paths as $basetheme => $subthemes) {

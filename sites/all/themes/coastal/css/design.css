@@ -47,7 +47,7 @@ header {
   vertical-align: middle;
 }
 
-#block-campus-switch-campus-switch h2 {
+#block-campus-switch-campus-switch h3 {
   display: inline-block;
   margin: 0;
   font-size: 12px;
@@ -403,7 +403,7 @@ background: -moz-linear-gradient(top,  #a6dde6 0%, #6d9299 100%); /* FF3.6+ */
 }
 
 #block-views-instagram-feed-block .view-header a,
-#block-views-happenings-feed-block h2 {
+#block-views-happenings-feed-block h3 {
   color: white;
   font-size: 20px;
   font-family: Lato;
@@ -450,7 +450,7 @@ background: -moz-linear-gradient(top,  #a6dde6 0%, #6d9299 100%); /* FF3.6+ */
 }
 
 #block-views-instagram-feed-block .view-header p,
-#block-views-happenings-feed-block h2 {
+#block-views-happenings-feed-block h3 {
   margin-bottom: 3px;
 }
 

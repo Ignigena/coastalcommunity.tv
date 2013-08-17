@@ -281,7 +281,7 @@ body > .navbar .brand {
   font-size: 15px;
 }
 
-.service-times {
+.block--service-times-block {
   background: #464344; /* Old browsers */
   background: -moz-linear-gradient(top,  #464344 0%, #231f20 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#464344), color-stop(100%,#231f20)); /* Chrome,Safari4+ */
@@ -293,7 +293,7 @@ body > .navbar .brand {
   height: 65px;
 }
 
-.service-times .block__content {
+.block--service-times-block .block__content {
   color: white;
   font-family: Lato;
   text-transform: uppercase;
@@ -302,7 +302,7 @@ body > .navbar .brand {
   line-height: 62px;
 }
 
-.service-times a.get-directions {
+.block--service-times-block a.get-directions {
   font-size: 12px;
   font-weight: normal;
   color: #b3abae;
@@ -313,19 +313,19 @@ body > .navbar .brand {
   margin-right: 20px;
 }
 
-.service-times a.get-directions:hover {
+.block--service-times-block a.get-directions:hover {
   text-decoration: none;
   background: #4c494a;
   color: white;
 }
 
-.service-times .social {
+.block--service-times-block .social {
   position:relative;
   top: -3px;
   float: right;
 }
 
-.service-times .social a {
+.block--service-times-block .social a {
   display: inline-block;
   font-family: zocial;
   text-transform: none;
@@ -350,7 +350,7 @@ body > .navbar .brand {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#464646', endColorstr='#303030',GradientType=0 ); /* IE6-9 */
 }
 
-.service-times .social a:hover {
+.block--service-times-block .social a:hover {
   text-decoration: none;
   color: white;
   -moz-box-shadow: inset 0 0 3px rgba(255,255,255,0.5);
@@ -358,7 +358,7 @@ body > .navbar .brand {
   box-shadow: inset 0 0 3px rgba(255,255,255,0.5);
 }
 
-.service-times .social a.facebook:hover{
+.block--service-times-block .social a.facebook:hover{
   background: #405d98; /* Old browsers */
   background: -moz-linear-gradient(top,  #405d98 0%, #1e2d4c 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#405d98), color-stop(100%,#1e2d4c)); /* Chrome,Safari4+ */
@@ -369,7 +369,7 @@ body > .navbar .brand {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#405d98', endColorstr='#1e2d4c',GradientType=0 ); /* IE6-9 */
 }
 
-.service-times .social a.twitter:hover {
+.block--service-times-block .social a.twitter:hover {
   background: #a6dde6; /* Old browsers */
 background: -moz-linear-gradient(top,  #a6dde6 0%, #6d9299 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a6dde6), color-stop(100%,#6d9299)); /* Chrome,Safari4+ */
@@ -380,7 +380,7 @@ background: -moz-linear-gradient(top,  #a6dde6 0%, #6d9299 100%); /* FF3.6+ */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6dde6', endColorstr='#6d9299',GradientType=0 ); /* IE6-9 */
 }
 
-.service-times .social a.youtube:hover{
+.block--service-times-block .social a.youtube:hover{
   background: #de2e35; /* Old browsers */
   background: -moz-linear-gradient(top,  #de2e35 0%, #701013 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#de2e35), color-stop(100%,#701013)); /* Chrome,Safari4+ */
@@ -392,7 +392,7 @@ background: -moz-linear-gradient(top,  #a6dde6 0%, #6d9299 100%); /* FF3.6+ */
 
 }
 
-.service-times .social a.googleplus:hover{
+.block--service-times-block .social a.googleplus:hover{
   background: #4376de; /* Old browsers */
   background: -moz-linear-gradient(top,  #4376de 0%, #24427e 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4376de), color-stop(100%,#24427e)); /* Chrome,Safari4+ */

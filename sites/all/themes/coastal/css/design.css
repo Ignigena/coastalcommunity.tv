@@ -184,6 +184,12 @@ body > .navbar .brand {
   font-size: 0.65em;
 }
 
+#block-superfish-1 li.first > ul,
+#block-superfish-1 .block__content li.menuparent.first > a:hover:after,
+#block-superfish-1 .block__content li.menuparent.first.sfHover > a:after {
+	display: none !important;
+}
+
 #main {
   clear: both;
 }

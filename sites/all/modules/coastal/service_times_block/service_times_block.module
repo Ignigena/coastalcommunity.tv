@@ -23,7 +23,10 @@ function service_times_block_block_view($delta = '') {
   switch ($delta) {
     case 'service_times':
       $block['subject'] = t("<none>");
-      $block['content'] = theme('service_times_template');
+      $block['content'] = array(
+        '#markup' => theme('service_times_template'),
+        '#attached' => array('css' => array(drupal_get_path('module', 'service_times_block') . '/service_times_block.css')),
+      );
       break;
   }
   return $block;

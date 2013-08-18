@@ -47,7 +47,7 @@ header {
   vertical-align: middle;
 }
 
-#block-campus-switch-campus-switch h3 {
+#block-campus-switch-campus-switch h2 {
   display: inline-block;
   margin: 0;
   font-size: 12px;
@@ -286,7 +286,7 @@ body > .navbar .brand {
 }
 
 #block-views-instagram-feed-block .view-header a,
-#block-views-happenings-feed-block h3 {
+#block-views-happenings-feed-block h2 {
   color: white;
   font-size: 20px;
   font-family: Lato;
@@ -333,7 +333,7 @@ body > .navbar .brand {
 }
 
 #block-views-instagram-feed-block .view-header p,
-#block-views-happenings-feed-block h3 {
+#block-views-happenings-feed-block h2 {
   margin-bottom: 3px;
 }
 

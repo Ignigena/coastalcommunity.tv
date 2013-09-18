@@ -743,6 +743,7 @@ div.jp-audio div.jp-type-playlist a.jp-stop {
   border: 0;
 }
 
+.page-user #block-views-our-staff-staff-block .views-row,
 .page-user .draggableviews-processed li.views-row {
   margin: 0;
   padding: 0;
@@ -754,6 +755,7 @@ div.jp-audio div.jp-type-playlist a.jp-stop {
   margin: 0;
 }
 
+.page-user #block-views-our-staff-staff-block .views-row img,
 .page-user ul.draggableviews-grid-our_staff-staff_block img {
   width: 100%
 }
@@ -776,6 +778,10 @@ div.jp-audio div.jp-type-playlist a.jp-stop {
 }
 
 .page-user #block-views-our-staff-staff-block form {
+  margin: 0;
+}
+
+.page-user #block-views-our-staff-staff-block ul {
   margin: 0;
 }
 

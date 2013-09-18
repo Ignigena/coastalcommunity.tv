@@ -726,3 +726,65 @@ div.jp-audio div.jp-type-playlist a.jp-stop {
 .view-id-registration_form header {
   display: none;
 }
+
+.page-user .user-picture {
+  float: right;
+  margin-top: -20px;
+  margin-left: 20px;
+}
+
+.page-user .field--name-field-title {
+  font-family: Lato;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.page-user .draggableviews-processed li.views-row {
+  border: 0;
+}
+
+.page-user .draggableviews-processed li.views-row {
+  margin: 0;
+  padding: 0;
+  float: left;
+  width: 33.333%;
+}
+
+.page-user ul.draggableviews-grid-our_staff-staff_block {
+  margin: 0;
+}
+
+.page-user ul.draggableviews-grid-our_staff-staff_block img {
+  width: 100%
+}
+
+.page-user .views-form-our-staff-staff-block .form-actions {
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.page-user #below {
+  background: #333;
+  border-top: 65px solid #1d191a;
+}
+
+.page-user #below .container {
+  padding: 0;
+  margin-top: -65px;
+}
+
+.page-user #block-views-our-staff-staff-block form {
+  margin: 0;
+}
+
+.page-user #block-views-our-staff-staff-block .row {
+  margin-left: 0;
+}
+
+.page-user #block-views-our-staff-staff-block .block__title {
+  color: whitesmoke;
+  padding-bottom: 5px;
+  font-family: Lato;
+}

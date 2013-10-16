@@ -107,6 +107,10 @@ header {
   border-top: 1px solid #00aeef;
 }
 
+#block-campus-switch-campus-switch ul li div.item-list {
+  display: none;
+}
+
 #block-superfish-1 {
   float: right;
   margin-top: 30px;

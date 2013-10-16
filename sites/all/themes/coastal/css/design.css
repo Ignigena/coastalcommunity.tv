@@ -743,10 +743,16 @@ div.jp-audio div.jp-type-playlist a.jp-stop {
   border: 0;
 }
 
+ul.draggableviews-processed {
+  margin: 0;
+}
+
 .page-user #block-views-our-staff-staff-block .views-row,
 .page-user .draggableviews-processed li.views-row,
-.view-our-staff .views-row {
+.view-our-staff .views-row,
+.view-our-staff .draggableviews-processed li.views-row {
   margin: 0;
+  border: 0;
   padding: 0;
   float: left;
   width: 33.333%;
@@ -757,24 +763,24 @@ div.jp-audio div.jp-type-playlist a.jp-stop {
   overflow: hidden;
 }
 
-.view-our-staff .views-row {
+.view-display-id-page.view-our-staff .views-row {
   text-align: center;
 }
-.view-our-staff .views-row img {
+.view-display-id-page.view-our-staff .views-row img {
   -webkit-transition: all 0.5s;
   border-left: 15px solid grey;
 }
-.view-our-staff .views-row:hover img {
+.view-display-id-page.view-our-staff .views-row:hover img {
   border-color: #0091c8;
 }
 
-.view-our-staff .views-row div.views-field.views-field-realname {
+.view-display-id-page.view-our-staff .views-row div.views-field.views-field-realname {
   font-family: Lato;
   font-size: 18px;
   padding: 5px;
 }
 
-.view-our-staff .views-row div.views-field.views-field-field-title {
+.view-display-id-page.view-our-staff .views-row div.views-field.views-field-field-title {
   margin-top:-5px;
   margin-bottom: 10px;
   font-size: 12px;

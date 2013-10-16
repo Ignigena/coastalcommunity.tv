@@ -749,6 +749,38 @@ div.jp-audio div.jp-type-playlist a.jp-stop {
   padding: 0;
   float: left;
   width: 33.333%;
+  list-style: none;
+  position: relative;
+  transition: all 0.5s;
+  -webkit-transition: all 0.5s;
+  overflow: hidden;
+}
+
+.page-user #block-views-our-staff-staff-block .views-row a {
+  color: rgba(255,255,255,0.7);
+  font-family: Lato;
+  font-size: 16px;
+  -webkit-transition: all 0.5s;
+}
+.page-user #block-views-our-staff-staff-block .views-row:hover a {
+  text-decoration: none;
+  color: white;
+}
+.page-user #block-views-our-staff-staff-block .views-row .views-field-realname {
+  position:absolute;
+  bottom:	0;	
+  background: rgba(0,0,0,0.5);
+  width: 100%;
+  text-align: right;
+  padding: 2px 5px;
+  box-sizing: border-box;
+  -webkit-transition: all 0.5s;
+}
+.page-user #block-views-our-staff-staff-block .views-row:hover .views-field-realname {
+  transform: scale(1.2);
+  -webkit-transform: scale(1.2);
+  transform-origin: bottom right;
+  -webkit-transform-origin: bottom right;
 }
 
 .page-user ul.draggableviews-grid-our_staff-staff_block {

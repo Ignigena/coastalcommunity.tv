@@ -739,6 +739,12 @@ div.jp-audio div.jp-type-playlist a.jp-stop {
   margin-bottom: 15px;
 }
 
+.page-user .field--name-field-about-me {
+  padding-bottom: 15px;
+  max-height: 352px;
+  overflow: scroll;
+}
+
 .page-user .draggableviews-processed li.views-row {
   border: 0;
 }

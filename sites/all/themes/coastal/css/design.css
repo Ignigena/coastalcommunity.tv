@@ -744,7 +744,8 @@ div.jp-audio div.jp-type-playlist a.jp-stop {
 }
 
 .page-user #block-views-our-staff-staff-block .views-row,
-.page-user .draggableviews-processed li.views-row {
+.page-user .draggableviews-processed li.views-row,
+.view-our-staff .views-row {
   margin: 0;
   padding: 0;
   float: left;
@@ -754,6 +755,29 @@ div.jp-audio div.jp-type-playlist a.jp-stop {
   transition: all 0.5s;
   -webkit-transition: all 0.5s;
   overflow: hidden;
+}
+
+.view-our-staff .views-row {
+  text-align: center;
+}
+.view-our-staff .views-row img {
+  -webkit-transition: all 0.5s;
+  border-left: 15px solid grey;
+}
+.view-our-staff .views-row:hover img {
+  border-color: #0091c8;
+}
+
+.view-our-staff .views-row div.views-field.views-field-realname {
+  font-family: Lato;
+  font-size: 18px;
+  padding: 5px;
+}
+
+.view-our-staff .views-row div.views-field.views-field-field-title {
+  margin-top:-5px;
+  margin-bottom: 10px;
+  font-size: 12px;
 }
 
 .page-user #block-views-our-staff-staff-block .views-row a {

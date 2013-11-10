@@ -276,17 +276,18 @@ class DateObject extends DateTime {
         $this->setGranularityFromTime($time, $tz);
       }
     }
-
-    // If we haven't got a valid timezone name yet, we need to set one or
-    // we will get undefined index errors.
-    // This can happen if $time had an offset or no timezone.
+    // If this tz was given as just an offset or the timezone
+    // was invalid, we need to do some tweaking.
     if (!$this->getTimezone() || !preg_match('/[a-zA-Z]/', $this->getTimezone()->getName())) {
 
-      // If the original $tz has a name, use it.
-      if (preg_match('/[a-zA-Z]/', $tz->getName())) {
+      // If the timezone name is an offset and the original
+      // $tz has a name, use it. This happens if you pass in
+      // a date string with an offset along with a specific timezone name.
+      if (!preg_match('/[a-zA-Z]/', $this->getTimezone()->getName()) && preg_match('/[a-zA-Z]/', $tz->getName())) {
         $this->setTimezone($tz);
       }
-      // We have no information about the timezone so must fallback to a default.
+      // If we get this far, we have no information about the timezone name,
+      // but we will get undefined index errors without any name.
       else {
         $this->setTimezone(new DateTimeZone("UTC"));
         $this->errors['timezone'] = t('No valid timezone name was provided.');
@@ -573,7 +574,7 @@ class DateObject extends DateTime {
     $regex2 = preg_replace($patterns, $repl2, $format_regexp, 1);
     $regex2 = str_replace('A', '(AM|PM)', $regex2);
     $regex2 = str_replace('a', '(am|pm)', $regex2);
-    preg_match('`^' . $regex2 . '$`u', $date, $values);
+    preg_match('`^' . $regex2 . '$`', $date, $values);
     array_shift($values);
     // If we did not find all the values for the patterns in the format, abort.
     if (count($letters) != count($values)) {
@@ -2099,17 +2100,6 @@ function date_part_format($part, $format) {
  *   The format string with all other elements removed.
  */
 function date_limit_format($format, $granularity) {
-  // Use the advanced drupal_static() pattern to improve performance.
-  static $drupal_static_fast;
-  if (!isset($drupal_static_fast)) {
-    $drupal_static_fast['formats'] = &drupal_static(__FUNCTION__);
-  }
-  $formats = &$drupal_static_fast['formats'];
-  $format_granularity_cid = $format .'|'. implode(',', $granularity);
-  if (isset($formats[$format_granularity_cid])) {
-    return $formats[$format_granularity_cid];
-  }
-
   // If punctuation has been escaped, remove the escaping. Done using strtr()
   // because it is easier than getting the escape character extracted using
   // preg_replace().
@@ -2179,13 +2169,10 @@ function date_limit_format($format, $granularity) {
   // After removing the non-desired parts of the format, test if the only things
   // left are escaped, non-date, characters. If so, return nothing.
   // Using S instead of w to pick up non-ASCII characters.
-  $test = trim(preg_replace('(\\\\\S{1,3})u', '', $format));
+  $test = trim(preg_replace('(\\\\\S{1,3})', '', $format));
   if (empty($test)) {
     $format = '';
   }
-
-  // Store the return value in the static array for performance.
-  $formats[$format_granularity_cid] = $format;
 
   return $format;
 }

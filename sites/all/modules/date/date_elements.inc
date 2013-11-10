@@ -320,7 +320,7 @@ function date_combo_element_process($element, &$form_state, $form) {
     '#field'         => $field,
     '#instance'      => $instance,
     '#weight'        => $instance['widget']['weight'],
-    '#required'      => ($element['#required'] && $delta == 0) ? 1 : 0,
+    '#required'      => ($instance['required'] && $delta == 0) ? 1 : 0,
     '#default_value' => isset($element['#default_value'][$from_field]) ? $element['#default_value'][$from_field] : '',
     '#delta'         => $delta,
     '#date_timezone' => $element['#date_timezone'],
@@ -451,8 +451,8 @@ function date_combo_validate($element, &$form_state) {
     return;
   }
 
-  $item = drupal_array_get_nested_value($form_values, $element['#parents']);
-  $posted = drupal_array_get_nested_value($form_input, $element['#parents']);
+  $item = $form_values[$field_name][$langcode][$delta];
+  $posted = $form_input[$field_name][$langcode][$delta];
 
   $field = field_widget_field($element, $form_state);
   $instance = field_widget_instance($element, $form_state);

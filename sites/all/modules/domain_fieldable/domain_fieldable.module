@@ -1,0 +1,127 @@
+<?php
+
+/**
+ * @file
+ * Domain Fieldable module file.
+ */
+
+/**
+ * Implements hook_entity_info().
+ */
+function domain_fieldable_entity_info() {
+  $return = array(
+    'domain_fieldable' => array(
+      'label' => t('Domain', array(), array('context' => 'a domain')),
+      'controller class' => 'DomainFieldableController',
+      'base table' => 'domain',
+      'load hook' => 'domain_fieldable_load',
+      'uri callback' => 'entity_class_uri',
+      'label callback' => 'entity_class_label',
+      'entity token' => 'domain_fieldable',
+      'fieldable' => TRUE,
+      'entity keys' => array(
+        'id' => 'domain_id',
+      ),
+      'bundles' => array(
+        'domain_fieldable' => array(
+          'label' => t('Domain', array(), array('context' => 'a domain')),
+          'admin' => array(
+            'path' => 'admin/structure/domain',
+            'real path' => 'admin/structure/domain',
+            'access arguments' => array('administer domains'),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  return $return;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function domain_fieldable_menu() {
+
+  $items['admin/structure/domain/view/%domain_fieldable/fields'] = array(
+    'title' => 'Fields',
+    'type' => MENU_LOCAL_TASK,
+    'access arguments' => array('administer domains'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('domain_fieldable_edit_form', 4),
+  );
+  
+  return $items;
+}
+
+function domain_fieldable_new($type = 'domain_fieldable') {
+
+  return entity_get_controller('domain_fieldable')->create(array(
+    'type' => $type,
+  ));
+}
+
+function domain_fieldable_save($domain_fieldable) {
+  return entity_get_controller('domain_fieldable')->save($domain_fieldable);
+}
+
+function domain_fieldable_load($id, $reset = FALSE) {
+  $domain_fieldables = domain_fieldable_load_multiple(array($id), array(), $reset);
+  return reset($domain_fieldables);
+}
+
+function domain_fieldable_load_multiple($ids = FALSE, $conditions = array(), $reset = FALSE) {
+  return entity_load('domain_fieldable', $ids, $conditions, $reset);
+}
+
+function domain_fieldable_edit_form($form, &$form_state, $domain_fieldable) {
+  
+  $form['data']['#tree'] = TRUE;
+  
+  $form_state['domain_fieldable'] = $domain_fieldable;
+  
+  field_attach_form('domain_fieldable', $domain_fieldable, $form, $form_state);
+
+  $form['actions'] = array(
+    '#type' => 'container',
+    '#attributes' => array('class' => array('form-actions')),
+    '#weight' => 400,
+  );
+ 
+  $submit = array();
+
+  if (!empty($form['#submit'])) {
+    $submit += $form['#submit'];
+  }
+
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+    '#submit' => $submit + array('domain_fieldable_edit_form_submit'),
+  );
+  
+  $form['#validate'][] = 'domain_fieldable_edit_form_validate';
+
+  return $form;
+}
+
+function domain_fieldable_edit_form_validate(&$form, &$form_state) {
+  $domain_fieldable = $form_state['domain_fieldable'];
+  
+  field_attach_form_validate('domain_fieldable', $domain_fieldable, $form, $form_state);
+}
+
+function domain_fieldable_edit_form_submit(&$form, &$form_state) {
+  
+  $domain_fieldable = $form_state['domain_fieldable'];
+  
+  if ($domain_fieldable->is_new = isset($domain_fieldable->is_new) ? $domain_fieldable->is_new : 0) {
+    $domain_fieldable->created = time();
+  }
+  
+  $domain_fieldable->changed = time();
+
+  field_attach_submit('domain_fieldable', $domain_fieldable, $form, $form_state);
+
+  domain_fieldable_save($domain_fieldable);
+}

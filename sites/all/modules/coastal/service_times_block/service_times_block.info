@@ -1,6 +1,0 @@
-name = Service Times Block
-description = Service times appearing on homepage.
-package = Coastal
-core = 7.x
-version = "7.x-1.0"
-dependencies[] = block

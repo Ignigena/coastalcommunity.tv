@@ -1,4 +1,4 @@
-.block--service-times-block {
+#block-views-location-block .view-display-id-block_1 {
   margin-top: -10px;
   background: #464344; /* Old browsers */
   background: -moz-linear-gradient(top,  #464344 0%, #231f20 100%); /* FF3.6+ */
@@ -11,16 +11,27 @@
   height: 65px;
 }
 
-.block--service-times-block .block__content {
+#block-views-location-block .view-display-id-block_1 .view-content {
   color: white;
   font-family: Lato;
   text-transform: uppercase;
   font-size: 30px;
   font-weight: 300;
   line-height: 62px;
+  max-width: 940px;
+  margin: 0 auto;
+  margin-top: 8px;
 }
 
-.block--service-times-block a.get-directions {
+#block-views-location-block .view-display-id-block_1 .view-content .views-field {
+  float: left;
+}
+
+#block-views-location-block .view-display-id-block_1 .view-content .views-field-nothing-1 {
+  float: right;
+}
+
+#block-views-location-block .view-display-id-block_1 a.get-directions {
   font-size: 12px;
   font-weight: normal;
   color: #b3abae;
@@ -31,19 +42,19 @@
   margin-right: 20px;
 }
 
-.block--service-times-block a.get-directions:hover {
+#block-views-location-block .view-display-id-block_1 a.get-directions:hover {
   text-decoration: none;
   background: #4c494a;
   color: white;
 }
 
-.block--service-times-block .social {
+#block-views-location-block .view-display-id-block_1 .social {
   position:relative;
   top: -3px;
   float: right;
 }
 
-.block--service-times-block .social a {
+#block-views-location-block .view-display-id-block_1 .social a {
   display: inline-block;
   font-family: zocial;
   text-transform: none;
@@ -68,7 +79,7 @@
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#464646', endColorstr='#303030',GradientType=0 ); /* IE6-9 */
 }
 
-.block--service-times-block .social a:hover {
+#block-views-location-block .view-display-id-block_1 .social a:hover {
   text-decoration: none;
   color: white;
   -moz-box-shadow: inset 0 0 3px rgba(255,255,255,0.5);
@@ -76,7 +87,7 @@
   box-shadow: inset 0 0 3px rgba(255,255,255,0.5);
 }
 
-.block--service-times-block .social a.facebook:hover{
+#block-views-location-block .view-display-id-block_1 .social a.facebook:hover{
   background: #405d98; /* Old browsers */
   background: -moz-linear-gradient(top,  #405d98 0%, #1e2d4c 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#405d98), color-stop(100%,#1e2d4c)); /* Chrome,Safari4+ */
@@ -87,7 +98,7 @@
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#405d98', endColorstr='#1e2d4c',GradientType=0 ); /* IE6-9 */
 }
 
-.block--service-times-block .social a.twitter:hover {
+#block-views-location-block .view-display-id-block_1 .social a.twitter:hover {
   background: #a6dde6; /* Old browsers */
 background: -moz-linear-gradient(top,  #a6dde6 0%, #6d9299 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a6dde6), color-stop(100%,#6d9299)); /* Chrome,Safari4+ */
@@ -98,7 +109,7 @@ background: -moz-linear-gradient(top,  #a6dde6 0%, #6d9299 100%); /* FF3.6+ */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6dde6', endColorstr='#6d9299',GradientType=0 ); /* IE6-9 */
 }
 
-.block--service-times-block .social a.youtube:hover{
+#block-views-location-block .view-display-id-block_1 .social a.youtube:hover{
   background: #de2e35; /* Old browsers */
   background: -moz-linear-gradient(top,  #de2e35 0%, #701013 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#de2e35), color-stop(100%,#701013)); /* Chrome,Safari4+ */
@@ -110,7 +121,7 @@ background: -moz-linear-gradient(top,  #a6dde6 0%, #6d9299 100%); /* FF3.6+ */
 
 }
 
-.block--service-times-block .social a.googleplus:hover{
+#block-views-location-block .view-display-id-block_1 .social a.googleplus:hover{
   background: #4376de; /* Old browsers */
   background: -moz-linear-gradient(top,  #4376de 0%, #24427e 100%); /* FF3.6+ */
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4376de), color-stop(100%,#24427e)); /* Chrome,Safari4+ */

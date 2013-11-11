@@ -369,10 +369,13 @@ body > .navbar .brand {
   padding: 20px 0;
   margin: 0;
   display: inline-block;
-  min-width: 240px;
+  min-width: 238px;
   background: #bcbdc0;
   position: relative;
   z-index: 20;
+  border-bottom:5px solid white;
+  border-right: 2px solid white;
+  margin-bottom: -5px;
 }
 
 .page-node .title:after {
@@ -386,6 +389,19 @@ body > .navbar .brand {
   border-top: 40px solid transparent;
   border-bottom: 40px solid transparent;
   border-left: 40px solid #bcbdc0;
+}
+
+.page-node .title:before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: -5px;
+  right: -47px;
+  width: 0; 
+  height: 0; 
+  border-top: 45px solid transparent;
+  border-bottom: 45px solid transparent;
+  border-left: 45px solid white;
 }
 
 .page-node ul.tabs.tabs--primary.links--inline {
@@ -1040,7 +1056,7 @@ background: -moz-linear-gradient(top,  #a6dde6 0%, #6d9299 100%); /* FF3.6+ */
   content: " ";
   display: block;
   position: absolute;
-  top: 86px;
+  top: 85px;
   right: -25px;
   width: 0; 
   height: 0; 

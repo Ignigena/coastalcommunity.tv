@@ -364,6 +364,29 @@ body > .navbar .brand {
   font-family: Lato;
 }
 
+.page-node .title {
+  padding: 20px 0;
+  margin: 0;
+  display: inline-block;
+  min-width: 240px;
+  background: #bcbdc0;
+  position: relative;
+  z-index: 20;
+}
+
+.page-node .title:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0px;
+  right: -40px;
+  width: 0; 
+  height: 0; 
+  border-top: 40px solid transparent;
+  border-bottom: 40px solid transparent;
+  border-left: 40px solid #bcbdc0;
+}
+
 .tabs {
   float: right;
   margin: 26px 0;
@@ -1006,4 +1029,26 @@ background: -moz-linear-gradient(top,  #a6dde6 0%, #6d9299 100%); /* FF3.6+ */
   background: linear-gradient(to bottom,  #4376de 0%,#24427e 100%); /* W3C */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4376de', endColorstr='#24427e',GradientType=0 ); /* IE6-9 */
 
+}
+
+/* END */
+
+.page-node article .field--name-field-image {
+  margin-top: -100px;
+  margin-bottom: 20px;
+  border-right: 5px solid white;
+  position: relative;
+}
+
+.page-node article .field--name-field-image:after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 86px;
+  right: -25px;
+  width: 0; 
+  height: 0; 
+  border-bottom: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 20px solid #58585a;
 }

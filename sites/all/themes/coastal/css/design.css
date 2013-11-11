@@ -365,6 +365,7 @@ body > .navbar .brand {
 }
 
 .page-node .title {
+  font-size: 32px;
   padding: 20px 0;
   margin: 0;
   display: inline-block;
@@ -385,6 +386,12 @@ body > .navbar .brand {
   border-top: 40px solid transparent;
   border-bottom: 40px solid transparent;
   border-left: 40px solid #bcbdc0;
+}
+
+.page-node ul.tabs.tabs--primary.links--inline {
+  z-index:20;
+  position:relative;
+  margin-right: 20px;
 }
 
 .tabs {

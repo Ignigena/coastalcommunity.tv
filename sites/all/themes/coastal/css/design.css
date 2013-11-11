@@ -41,6 +41,10 @@ header {
   float: left;
 }
 
+@media (max-width: 979px) {
+  #logo img { max-width: 230px; }
+}
+
 #block-campus-switch-campus-switch {
   float: right;
   white-space: nowrap;
@@ -143,6 +147,10 @@ body > .navbar .brand {
   padding: 0.5em;
   line-height: 10px;
   margin: 0 0.5em;
+}
+
+@media (max-width: 979px) {
+  #block-superfish-1 .block__content li a { margin: 0 0.1em; }
 }
 
 #block-superfish-1 .block__content li a:hover,
@@ -404,6 +412,22 @@ body > .navbar .brand {
   border-left: 45px solid white;
 }
 
+@media (max-width: 979px) {
+  .page-node .title {
+    font-size: 25px;
+    line-height: 25px;
+    min-width: 184px;
+  }
+  .page-node .title:after {
+    border-width: 33px;
+    right: -33px;
+  }
+  .page-node .title:before {
+    border-width: 38px;
+    right: -40px;
+  }
+}
+
 .page-node ul.tabs.tabs--primary.links--inline {
   z-index:20;
   position:relative;
@@ -432,6 +456,10 @@ body > .navbar .brand {
   margin: 0;
   font-size: 16px;
   margin-left: 20px;
+}
+
+@media (max-width: 979px) {
+  .menu-block-wrapper ul { font-size: 14px; }
 }
 
 .menu-block-wrapper ul a {
@@ -1080,4 +1108,13 @@ background: -moz-linear-gradient(top,  #a6dde6 0%, #6d9299 100%); /* FF3.6+ */
   border-bottom: 20px solid transparent;
   border-right: 20px solid transparent;
   border-top: 20px solid #58585a;
+}
+
+@media (max-width: 979px) {
+  .page-node article .field--name-field-image {
+    margin-top: -85px;
+  }
+  .page-node article .field--name-field-image:after {
+    top: 70px;
+  }
 }

@@ -904,7 +904,7 @@ ul.draggableviews-processed {
 
 /* Service Times Block */
 
-#block-views-location-block .view-display-id-block_1 {
+.front #block-views-location-block .view-display-id-block_1 {
   margin-top: -8px;
   background: #464344; /* Old browsers */
   background: -moz-linear-gradient(top,  #464344 0%, #231f20 100%); /* FF3.6+ */
@@ -929,19 +929,32 @@ ul.draggableviews-processed {
   margin-top: 8px;
 }
 
-#block-views-location-block .leaflet-container {
+.not-front #block-views-location-block .view-display-id-block_1 .view-content {
+  color: #08c;
+  text-align: center;
+}
+
+.front #block-views-location-block .leaflet-container {
   display: none;
 }
 
-#block-views-location-block .view-display-id-block_1 .view-content .views-field {
+.not-front #block-views-location-block {
+  margin-top: 20px;
+}
+
+.front #block-views-location-block .view-display-id-block_1 .view-content .views-field {
   float: left;
 }
 
-#block-views-location-block .view-display-id-block_1 .view-content .views-field-nothing-1 {
+.front #block-views-location-block .view-display-id-block_1 .view-content .views-field-nothing-1 {
   float: right;
 }
 
-#block-views-location-block .view-display-id-block_1 a.get-directions {
+.not-front #block-views-location-block .view-display-id-block_1 a.get-directions {
+  display: none;
+}
+
+.front #block-views-location-block .view-display-id-block_1 a.get-directions {
   font-size: 12px;
   font-weight: normal;
   color: #b3abae;
@@ -958,7 +971,11 @@ ul.draggableviews-processed {
   color: white;
 }
 
-#block-views-location-block .view-display-id-block_1 .social {
+.not-front #block-views-location-block .view-display-id-block_1 .social {
+  display: none;
+}
+
+.front #block-views-location-block .view-display-id-block_1 .social {
   position:relative;
   top: -3px;
   float: right;

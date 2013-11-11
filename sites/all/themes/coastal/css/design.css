@@ -450,17 +450,6 @@ body > .navbar .brand {
 	border-left: 9px solid #58585a;
 }
 
-.page-connect-students .title {
-  background: url('../images/students.jpg') center center no-repeat;
-  background-color: transparent;
-  background-size: cover;
-  color: white;
-  text-shadow: black 1px 1px 2px;
-  padding: 10px;
-  padding-top: 100px;
-  text-align: right;
-}
-
 .page-connect-students .view-student-ministries .view-content {
   margin-left: -20px;
   text-align: center;

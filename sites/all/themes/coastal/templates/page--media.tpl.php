@@ -40,9 +40,7 @@
           $spancount -= 4;
       ?>
       <div class="sidebar span4">
-        <div data-spy="affix" data-offset-top="200">
-          <?php print render($page['sidebar_first']); ?>
-        </div>
+        <?php print render($page['sidebar_first']); ?>
       </div>
       <?php
         endif;

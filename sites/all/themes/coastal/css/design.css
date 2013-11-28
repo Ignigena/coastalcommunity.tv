@@ -1244,10 +1244,14 @@ background: -moz-linear-gradient(top,  #a6dde6 0%, #6d9299 100%); /* FF3.6+ */
 
 
 .section-media .span8 .views-field-title {
-  margin-top: -64px;
-  padding-bottom: 4px;
+  margin-top: -66px;
+  padding-bottom: 6px;
+}
+
+.section-media .span8 .views-field-title h3 {
   color: whitesmoke;
   font-family: Lato;
+  font-weight: normal;
 }
 
 .section-media .span8 .views-field-body {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Metatag integration for the metatag_opengraph module.
@@ -248,16 +249,6 @@ function metatag_opengraph_metatag_info() {
   $info['tags']['og:fax_number'] = array(
     'label' => t('Open Graph Fax Number'),
     'description' => '',
-    'class' => 'DrupalTextMetaTag',
-    'group' => 'open-graph',
-    'element' => array(
-      '#theme' => 'metatag_opengraph',
-    ),
-  );
-
-  $info['tags']['og:locale'] = array(
-    'label' => t('Open Graph Locale'),
-    'description' => 'The locale these tags are marked up in. Of the format language_TERRITORY. Default is en_US.',
     'class' => 'DrupalTextMetaTag',
     'group' => 'open-graph',
     'element' => array(

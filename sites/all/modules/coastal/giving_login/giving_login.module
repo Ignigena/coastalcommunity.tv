@@ -1,0 +1,37 @@
+<?php
+
+/**
+ * Implements hook_block_info().
+ */
+function giving_login_block_info() {
+  $blocks['giving_login'] = array(
+    'info' => t('Giving Login'), 
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function giving_login_block_view($delta = '') {
+  $block['subject'] = t('Giving Login');
+  $block['content'] = theme('giving_login');
+
+  return $block;
+}
+
+/**
+ * Implements hook_login_theme().
+ */
+function giving_login_theme() {   
+  $base = array(
+    'path' => drupal_get_path('module', 'giving_login') . "/theme",   
+  );
+  return array(
+    'giving_login' => $base + array(
+      'template' => 'giving_login',
+    ),   
+  ); 
+}

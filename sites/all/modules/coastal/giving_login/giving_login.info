@@ -1,0 +1,4 @@
+name = Giving Login
+description = Login box for Fellowship One giving portal.
+package = Coastal
+core = 7.x

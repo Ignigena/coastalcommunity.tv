@@ -68,7 +68,6 @@
  * @see template_process()
  */
 ?>
-
 <header id="header" role="banner">
   <div class="container">
     <?php print render($page['header_top']); ?>
@@ -111,7 +110,7 @@
           $spancount -= 3;
       ?>
       <div class="sidebar span3">
-        <div data-spy="affix" data-offset-top="200">
+        <div<?php if (arg(1) != 31): ?> data-spy="affix" data-offset-top="200"<?php endif; ?>>
           <?php print render($page['sidebar_first']); ?>
         </div>
       </div>

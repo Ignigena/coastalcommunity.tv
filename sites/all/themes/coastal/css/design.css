@@ -245,7 +245,7 @@ body > .navbar .brand {
 }
 
 .views-slideshow-controls-bottom {
-  height: 70px;
+  height: 72px;
   background: #bcbdc0;
   font-family: Lato;
 }
@@ -1387,10 +1387,10 @@ article.node--page--full .field--name-field-image.video-player:hover .field__ite
   color: black;
 } 
 
-div.views-row.views-row-1.views-row-odd.views-row-first {
+.view-calendar-sidebar div.views-row.views-row-1.views-row-odd.views-row-first {
   margin-top: -10px;
 }
-div.views-row.views-row-4.views-row-even.views-row-last {
+.view-calendar-sidebar div.views-row.views-row-4.views-row-even.views-row-last {
   margin-bottom: -40px;
 }
 

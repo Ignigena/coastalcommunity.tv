@@ -1343,3 +1343,103 @@ article.node--page--full .field--name-field-image.video-player:hover .field__ite
   line-height: 28px;
   margin-bottom: 7px;
 }
+
+.page-events .titlewrap .container {
+  height: 10px;
+  overflow: hidden;
+}
+
+.view-calendar-sidebar .views-row {
+  position: relative;
+}
+
+.view-calendar-sidebar .views-field-field-ministry {
+  position: absolute;
+  top: 94px;
+  right: 0;
+  background: #231f20;
+  padding: 3px 5px;
+  color: white;
+  font-size: 11px;
+  font-family: Lato;
+  text-transform: uppercase;
+  font-weight: 200;
+}
+
+.view-calendar-sidebar .views-field-title {
+  background: #bcbdc0;
+  padding: 5px 3px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-family: Lato;
+  text-transform: uppercase;
+  font-weight: 300;
+}
+
+.view-calendar-sidebar .views-field-title a {
+  color: #555;
+}
+.view-calendar-sidebar .views-field-title a:hover {
+  text-decoration: none;
+}
+
+.view-calendar-sidebar .views-row:hover .views-field-title a {
+  color: black;
+} 
+
+div.views-row.views-row-1.views-row-odd.views-row-first {
+  margin-top: -10px;
+}
+div.views-row.views-row-4.views-row-even.views-row-last {
+  margin-bottom: -40px;
+}
+
+.page-events .fc-header-title h2 {
+  padding: 10px 20px 5px;
+  font-family: Lato;
+  font-weight: 200;
+  margin: 0;
+}
+
+.page-events .fc-header-right {
+  padding-top: 16px
+}
+
+.page-events th.fc-day-header {
+  width: 99px;
+  background: #231f20;
+  border-color: #231f20;
+  color: white;
+  font-family: Lato;
+  text-transform: uppercase;
+  line-height: 25px;
+}
+
+.page-events td.fc-mon { border-left: 0; }
+.page-events td.fc-sun { border-right: 0; }
+.page-events .fc-last td { border-bottom: 0; }
+
+.page-events .fc-view table {
+  border: 1px solid #231f20;
+}
+
+.page-events .fc-state-highlight {
+  background: #d8e9f0;
+}
+
+.page-events .fc-event-inner {
+  line-height: 15px;
+  padding: 2px;
+  font-family: Lato;
+  font-size: 14px;
+  font-weight: 200;
+}
+
+.page-events .fc-event-inner span {
+  padding: 0;
+}
+
+.page-events .fc-day-number {
+  font-weight: bold;
+  font-size: 11px;
+}

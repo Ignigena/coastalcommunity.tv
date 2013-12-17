@@ -1443,3 +1443,28 @@ article.node--page--full .field--name-field-image.video-player:hover .field__ite
   font-weight: bold;
   font-size: 11px;
 }
+
+.page-events .views-exposed-form {
+  position: absolute;
+  width: 220px;
+  margin-top: 9px;
+}
+
+.page-events .views-widget-filter-field_ministry_tid {
+  padding-right: 2px;
+}
+
+.page-events .views-widget-filter-field_ministry_tid label {
+  display: none;
+}
+
+.page-events .views-widget-filter-field_ministry_tid select {
+  width: 120px;
+  font-size: 12px;
+  height: 29px;
+}
+
+.page-events .views-exposed-form .views-exposed-widget .form-submit {
+  margin-top: 0px;
+  height: 29px;
+}

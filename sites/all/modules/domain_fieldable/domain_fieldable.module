@@ -15,7 +15,6 @@ function domain_fieldable_entity_info() {
       'controller class' => 'DomainFieldableController',
       'base table' => 'domain',
       'load hook' => 'domain_fieldable_load',
-      'uri callback' => 'entity_class_uri',
       'label callback' => 'entity_class_label',
       'entity token' => 'domain_fieldable',
       'fieldable' => TRUE,

@@ -93,6 +93,9 @@
     <div class="container">
       <?php print render($tabs); ?>
       <?php print render($title_prefix); ?>
+      <?php if ($feed_icons): ?>
+        <?php print render($feed_icons); ?>
+      <?php endif; ?>
       <?php if ($title): ?>
         <h1 class="title" id="page-title"><?php print $title; ?></h1>
       <?php endif; ?>

@@ -1479,3 +1479,8 @@ article.node--page--full .field--name-field-image.video-player:hover .field__ite
   margin-top: 0px;
   height: 29px;
 }
+
+a.feed-icon {
+  float: right;
+  margin-top: 30px
+}

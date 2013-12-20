@@ -9,6 +9,12 @@
   function coastal_preprocess_html(&$variables) {
     drupal_add_js(drupal_get_path('theme', 'coastal') . '/js/coastal.js', array('group' => JS_THEME));
   }
+  
+  function coastal_page_alter(&$page) {
+    if (arg(0) == "blog" && !arg(1)) {
+      drupal_set_title("Happenings Blog");
+    }
+  }
 
   function coastal_html_head_alter(&$head_elements) {
     $head_elements['metatag_generator']['#value'] = 'Bethel (http://bethel.io)';

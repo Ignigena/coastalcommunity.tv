@@ -72,6 +72,9 @@ function campus_switch_block($op = 'list', $delta = 0, $edit = array()) {
 function theme_campus_switch_block($variables) {
   $_domain = domain_get_domain();
   $domains = $variables['domains'];
+  
+  $domain_fields = domain_fieldable_load($_domain['domain_id']);
+  
   $output = '';
   $items = array();
   $msg = FALSE;
@@ -108,6 +111,7 @@ function theme_campus_switch_block($variables) {
     }
   }
   $output .= theme('item_list', array('items' => $items));
+  $output .= $domain_fields->field_service_times['und'][0]['safe_value'];
   if ($msg) {
     $output .= t('<em>* Inactive domain.</em>');
   }

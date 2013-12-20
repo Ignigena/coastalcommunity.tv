@@ -57,8 +57,10 @@ header {
 }
 
 #block-campus-switch-campus-switch h2 {
-  display: inline-block;
+  display: block;
+  float: left;
   margin: 0;
+  margin-top: 13px;
   font-size: 12px;
   line-height: 6px;
   padding: 0 4px;
@@ -71,6 +73,15 @@ header {
   display: inline-block;
   vertical-align: middle;
   font-family: Lato;
+}
+
+#block-campus-switch-campus-switch .block__content p {
+  clear:both;
+  font-size: 14px;
+  padding-top: 3px;
+  text-align: center;
+  margin-bottom: -6px;
+  color: #231f20;
 }
 
 @media (max-width: 568px) {

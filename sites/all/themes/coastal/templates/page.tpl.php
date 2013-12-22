@@ -113,7 +113,7 @@
           $spancount -= 3;
       ?>
       <div class="sidebar span3">
-        <div<?php if (arg(1) != 31): ?> data-spy="affix" data-offset-top="200"<?php endif; ?>>
+        <div<?php if (arg(1) != 31 && arg(0) != 'taxonomy'): ?> data-spy="affix" data-offset-top="200"<?php endif; ?>>
           <?php print render($page['sidebar_first']); ?>
         </div>
       </div>

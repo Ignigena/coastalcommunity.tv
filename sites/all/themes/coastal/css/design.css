@@ -1500,3 +1500,14 @@ a.feed-icon {
   top: 10px;
   margin-left: -249px;
 }
+
+.section-connect div#block-views-ministries-location-block {
+  margin-top: -20px;
+  width: 240px;
+}
+
+.section-connect div.field--name-field-subtitle {
+  font-family: Lato;
+  font-size: 24px;
+  line-height: 45px;
+}

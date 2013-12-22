@@ -15,7 +15,3 @@
       drupal_set_title("Happenings Blog");
     }
   }
-
-  function coastal_html_head_alter(&$head_elements) {
-    $head_elements['metatag_generator']['#value'] = 'Bethel (http://bethel.io)';
-  }

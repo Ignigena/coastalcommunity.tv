@@ -874,7 +874,7 @@ div.jp-audio div.jp-type-playlist a.jp-stop {
 
 .page-user .field--name-field-about-me {
   padding-bottom: 15px;
-  max-height: 352px;
+  max-height: 280px;
   overflow: scroll;
 }
 
@@ -1510,4 +1510,44 @@ a.feed-icon {
   font-family: Lato;
   font-size: 24px;
   line-height: 45px;
+}
+
+.section-connect div.views-field.views-field-field-address {
+  font-size: 11px;
+  line-height: 25px;
+}
+
+.section-connect div.views-field-field-meeting-time {
+  font-family: Lato;
+  font-size: 18px;
+  line-height: 40px;
+}
+
+.section-connect .term-listing-heading {
+  margin-bottom: 20px;
+}
+
+.section-connect article h2 {
+  font-family: Lato;
+}
+
+.section-connect article ul.links {
+  margin-bottom: 20px;
+}
+
+.view-students-ministries table {
+  width: 100%;
+}
+
+.view-students-ministries td {
+  width: 50%;
+  border-sizing: border-box;
+  text-align: center;
+  font-family: Lato;
+  font-size: 18px;
+  line-height: 35px;
+}
+
+.view-students-ministries td:hover {
+  background: #f5f6fa;
 }

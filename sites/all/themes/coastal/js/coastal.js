@@ -4,6 +4,7 @@
       $('#block-views-location-block .leaflet-container').slideToggle(400, function() {
         _leaflet_resize3();
       });
+      $('#block-views-location-block .views-field-field-address').fadeToggle(400);
       return false;
     });
     

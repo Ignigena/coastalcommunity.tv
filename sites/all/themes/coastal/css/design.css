@@ -1568,6 +1568,10 @@ a.feed-icon {
   display: none;
 }
 
+.view-location .views-field-field-address a {
+  color: whitesmoke;
+}
+
 .leaflet-control-attribution {
   display: none;
 }

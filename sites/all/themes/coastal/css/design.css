@@ -1583,3 +1583,13 @@ a.feed-icon {
 .leaflet-control-attribution {
   display: none;
 }
+
+body.html.logged-in.navbar-administration.navbar-tray-open.navbar-fixed.navbar-vertical,
+body.html.logged-in.navbar-administration.navbar-fixed.navbar-vertical,
+body.html.logged-in.navbar-administration.navbar-fixed.navbar-horizontal {
+  padding-top: 39px !important;
+}
+
+body.html.logged-in.navbar-administration.navbar-tray-open.navbar-fixed.navbar-horizontal {
+  padding-top: 79px !important;
+}

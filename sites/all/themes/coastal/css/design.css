@@ -1593,3 +1593,19 @@ body.html.logged-in.navbar-administration.navbar-fixed.navbar-horizontal {
 body.html.logged-in.navbar-administration.navbar-tray-open.navbar-fixed.navbar-horizontal {
   padding-top: 79px !important;
 }
+
+.page-user div#main-content {
+  position: relative;
+}
+
+.page-user .field--name-field-social {
+  position: absolute;
+  top: -20px;
+  right: 0;
+  padding: 10px 10px 3px;
+  background: rgba(255,255,255,0.8);
+}
+
+.page-user .field--name-field-social img {
+  margin-bottom: 7px;
+}

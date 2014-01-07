@@ -905,11 +905,11 @@ ul.draggableviews-processed {
 .view-display-id-page.view-our-staff .views-row {
   text-align: center;
 }
-.view-display-id-page.view-our-staff .views-row img {
+.view-display-id-page.view-our-staff .views-row .views-field-picture img {
   -webkit-transition: all 0.5s;
   border-left: 15px solid grey;
 }
-.view-display-id-page.view-our-staff .views-row:hover img {
+.view-display-id-page.view-our-staff .views-row:hover .views-field-picture img {
   border-color: #0091c8;
 }
 

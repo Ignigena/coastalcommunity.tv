@@ -139,7 +139,20 @@ function _social_profile_field_get_domain($url) {
  * Returns path to icon file.
  */
 function _social_profile_field_get_icon_path($domain = 'default') {
-  return drupal_get_path('module', 'social_profile_field') . '/icons/' . $domain . '.png';
+  // Prefer a custom theme image if one exists.
+  $path = path_to_theme() . '/social_icons/' . $domain . '.png';
+
+  // Fallback to module defined theme image.
+  if (!file_exists($path)) {
+    $path = drupal_get_path('module', 'social_profile_field') . '/icons/' . $domain . '.png';
+
+    // Fallback to default icon.
+    if (!file_exists($path)) {
+      $path = drupal_get_path('module', 'social_profile_field') . '/icons/default.png';
+    }
+  }
+
+  return $path;
 }
 
 /**
@@ -149,9 +162,7 @@ function _social_profile_field_get_icon_path($domain = 'default') {
  */
 function _social_profile_field_get_icon($domain) {
   $path = _social_profile_field_get_icon_path($domain);
-  if (!file_exists($path)) {
-    $path = _social_profile_field_get_icon_path();
-  }
+
   return theme('image', array(
     'path' => $path,
     'attributes' => array('class' => 'social-profile-icon'),

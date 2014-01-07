@@ -925,6 +925,11 @@ ul.draggableviews-processed {
   font-size: 12px;
 }
 
+.view-display-id-page.view-our-staff .views-row div.views-field-field-social {
+  margin-bottom: 20px;
+  margin-top: -5px;
+}
+
 .page-user #block-views-our-staff-staff-block .views-row a {
   color: rgba(255,255,255,0.7);
   font-family: Lato;

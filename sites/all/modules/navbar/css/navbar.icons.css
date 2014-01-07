@@ -1,13 +1,14 @@
 /**
- * @file
+ * @file navbar.icons.css
+ *
  * Styling for navbar module icons.
  */
 
-.drupal-navbar .navbar-icon {
+#navbar-administration .navbar-icon {
   padding-left: 2.75em; /* LTR */
   position: relative;
 }
-.drupal-navbar .navbar-icon:before {
+#navbar-administration .navbar-icon:before {
   background-attachment: scroll;
   background-color: transparent;
   background-position: center center;
@@ -21,24 +22,24 @@
   top: 0;
   width: 20px;
 }
-.no-svg .drupal-navbar .navbar-icon:before {
+.no-svg #navbar-administration .navbar-icon:before {
   background-size: auto auto;
 }
-.drupal-navbar button.navbar-icon {
+#navbar-administration button.navbar-icon {
   background-color: transparent;
   border: 0;
   font-size: 1em;
 }
-.drupal-navbar .menu ul .navbar-icon {
+#navbar-administration .menu ul .navbar-icon {
   padding-left: 1.3333em; /* LTR */
 }
-.drupal-navbar .menu ul a.navbar-icon:before {
+#navbar-administration .menu ul a.navbar-icon:before {
   display: none;
 }
-.drupal-navbar .navbar-tray-vertical .menu ul {
+#navbar-administration .navbar-tray-vertical .menu ul {
   margin-left: 1.5em; /* LTR */
 }
-.drupal-navbar .navbar-tray-vertical .menu ul ul {
+#navbar-administration .navbar-tray-vertical .menu ul ul {
   margin-left: 0.75em; /* LTR */
 }
 
@@ -52,11 +53,11 @@
   background-image: url("../icons/bebebe/house.png");
 }
 .navbar-bar .navbar-icon-home:active:before,
-.navbar-bar .navbar-icon-home.active:before {
+.navbar-bar .navbar-icon-home.navbar-active:before {
   background-image: url("../icons/ffffff/house.svg");
 }
 .no-svg .navbar-bar .navbar-icon-home:active:before,
-.no-svg .navbar-bar .navbar-icon-home.active:before {
+.no-svg .navbar-bar .navbar-icon-home.navbar-active:before {
   background-image: url("../icons/ffffff/house.png");
 }
 .navbar-bar .navbar-icon-menu:before {
@@ -66,11 +67,11 @@
   background-image: url("../icons/bebebe/hamburger.png");
 }
 .navbar-bar .navbar-icon-menu:active:before,
-.navbar-bar .navbar-icon-menu.active:before {
+.navbar-bar .navbar-icon-menu.navbar-active:before {
   background-image: url("../icons/ffffff/hamburger.svg");
 }
 .no-svg .navbar-bar .navbar-icon-menu:active:before,
-.no-svg .navbar-bar .navbar-icon-menu.active:before {
+.no-svg .navbar-bar .navbar-icon-menu.navbar-active:before {
   background-image: url("../icons/ffffff/hamburger.png");
 }
 .navbar-bar .navbar-icon-help:before {
@@ -80,11 +81,11 @@
   background-image: url("../icons/bebebe/questionmark-disc.png");
 }
 .navbar-bar .navbar-icon-help:active:before,
-.navbar-bar .navbar-icon-help.active:before {
+.navbar-bar .navbar-icon-help.navbar-active:before {
   background-image: url("../icons/ffffff/questionmark-disc.svg");
 }
 .no-svg .navbar-bar .navbar-icon-help:active:before,
-.no-svg .navbar-bar .navbar-icon-help.active:before {
+.no-svg .navbar-bar .navbar-icon-help.navbar-active:before {
   background-image: url("../icons/ffffff/questionmark-disc.png");
 }
 
@@ -98,11 +99,11 @@
   background-image: url("../icons/bebebe/star.png");
 }
 .navbar-bar .navbar-icon-shortcut:active:before,
-.navbar-bar .navbar-icon-shortcut.active:before {
+.navbar-bar .navbar-icon-shortcut.navbar-active:before {
   background-image: url("../icons/ffffff/star.svg");
 }
 .no-svg .navbar-bar .navbar-icon-shortcut:active:before,
-.no-svg .navbar-bar .navbar-icon-shortcut.active:before {
+.no-svg .navbar-bar .navbar-icon-shortcut.navbar-active:before {
   background-image: url("../icons/ffffff/star.png");
 }
 
@@ -116,17 +117,31 @@
   background-image: url("../icons/bebebe/person.png");
 }
 .navbar-bar .navbar-icon-user:active:before,
-.navbar-bar .navbar-icon-user.active:before {
+.navbar-bar .navbar-icon-user.navbar-active:before {
   background-image: url("../icons/ffffff/person.svg");
 }
 .no-svg .navbar-bar .navbar-icon-user:active:before,
-.no-svg .navbar-bar .navbar-icon-user.active:before {
+.no-svg .navbar-bar .navbar-icon-user.navbar-active:before {
   background-image: url("../icons/ffffff/person.png");
 }
 
 /**
  * Main menu icons.
  */
+.navbar-icon-dashboard:before {
+  background-image: url("../icons/787878/dashboard.svg");
+}
+.no-svg .navbar-icon-dashboard:before {
+  background-image: url("../icons/787878/dashboard.png");
+}
+.navbar-icon-dashboard:active:before,
+.navbar-icon-dashboard.navbar-active:before {
+  background-image: url("../icons/000000/dashboard.svg");
+}
+.no-svg .navbar-icon-dashboard:active:before,
+.no-svg .navbar-icon-dashboard.navbar-active:before {
+  background-image: url("../icons/000000/dashboard.png");
+}
 .navbar-icon-content:before {
   background-image: url("../icons/787878/file.svg");
 }
@@ -134,11 +149,11 @@
   background-image: url("../icons/787878/file.png");
 }
 .navbar-icon-content:active:before,
-.navbar-icon-content.active:before {
+.navbar-icon-content.navbar-active:before {
   background-image: url("../icons/000000/file.svg");
 }
 .no-svg .navbar-icon-content:active:before,
-.no-svg .navbar-icon-content.active:before {
+.no-svg .navbar-icon-content.navbar-active:before {
   background-image: url("../icons/000000/file.png");
 }
 .navbar-icon-structure:before {
@@ -148,11 +163,11 @@
   background-image: url("../icons/787878/orgchart.png");
 }
 .navbar-icon-structure:active:before,
-.navbar-icon-structure.active:before {
+.navbar-icon-structure.navbar-active:before {
   background-image: url("../icons/000000/orgchart.svg");
 }
 .no-svg .navbar-icon-structure:active:before,
-.no-svg .navbar-icon-structure.active:before {
+.no-svg .navbar-icon-structure.navbar-active:before {
   background-image: url("../icons/000000/orgchart.png");
 }
 .navbar-icon-appearance:before {
@@ -162,11 +177,11 @@
   background-image: url("../icons/787878/paintbrush.png");
 }
 .navbar-icon-appearance:active:before,
-.navbar-icon-appearance.active:before {
+.navbar-icon-appearance.navbar-active:before {
   background-image: url("../icons/000000/paintbrush.svg");
 }
 .no-svg .navbar-icon-appearance:active:before,
-.no-svg .navbar-icon-appearance.active:before {
+.no-svg .navbar-icon-appearance.navbar-active:before {
   background-image: url("../icons/000000/paintbrush.png");
 }
 .navbar-icon-people:before {
@@ -176,11 +191,11 @@
   background-image: url("../icons/787878/people.png");
 }
 .navbar-icon-people:active:before,
-.navbar-icon-people.active:before {
+.navbar-icon-people.navbar-active:before {
   background-image: url("../icons/000000/people.svg");
 }
 .no-svg .navbar-icon-people:active:before,
-.no-svg .navbar-icon-people.active:before {
+.no-svg .navbar-icon-people.navbar-active:before {
   background-image: url("../icons/000000/people.png");
 }
 .navbar-icon-modules:before {
@@ -190,11 +205,11 @@
   background-image: url("../icons/787878/puzzlepiece.png");
 }
 .navbar-icon-modules:active:before,
-.navbar-icon-modules.active:before {
+.navbar-icon-modules.navbar-active:before {
   background-image: url("../icons/000000/puzzlepiece.svg");
 }
 .no-svg .navbar-icon-modules:active:before,
-.no-svg .navbar-icon-modules.active:before {
+.no-svg .navbar-icon-modules.navbar-active:before {
   background-image: url("../icons/000000/puzzlepiece.png");
 }
 .navbar-icon-configuration:before {
@@ -204,11 +219,11 @@
   background-image: url("../icons/787878/wrench.png");
 }
 .navbar-icon-configuration:active:before,
-.navbar-icon-configuration.active:before {
+.navbar-icon-configuration.navbar-active:before {
   background-image: url("../icons/000000/wrench.svg");
 }
 .no-svg .navbar-icon-configuration:active:before,
-.no-svg .navbar-icon-configuration.active:before {
+.no-svg .navbar-icon-configuration.navbar-active:before {
   background-image: url("../icons/000000/wrench.png");
 }
 .navbar-icon-reports:before {
@@ -218,11 +233,11 @@
   background-image: url("../icons/787878/barchart.png");
 }
 .navbar-icon-reports:active:before,
-.navbar-icon-reports.active:before {
+.navbar-icon-reports.navbar-active:before {
   background-image: url("../icons/000000/barchart.svg");
 }
 .no-svg .navbar-icon-reports:active:before,
-.no-svg .navbar-icon-reports.active:before {
+.no-svg .navbar-icon-reports.navbar-active:before {
   background-image: url("../icons/000000/barchart.png");
 }
 .navbar-icon-help:before {
@@ -232,16 +247,16 @@
   background-image: url("../icons/787878/questionmark-disc.png");
 }
 .navbar-icon-help:active:before,
-.navbar-icon-help.active:before {
+.navbar-icon-help.navbar-active:before {
   background-image: url("../icons/000000/questionmark-disc.svg");
 }
 .no-svg .navbar-icon-help:active:before,
-.no-svg .navbar-icon-help.active:before {
+.no-svg .navbar-icon-help.navbar-active:before {
   background-image: url("../icons/000000/questionmark-disc.png");
 }
 
 @media only screen and (min-width: 16.5em) {
-  .drupal-navbar .navbar-bar .navbar-icon {
+  #navbar-administration .navbar-bar .navbar-icon {
     margin-left: 0;
     margin-right: 0;
     padding-left: 0;
@@ -249,30 +264,30 @@
     text-indent: -9999px;
     width: 4em;
   }
-  .drupal-navbar .navbar-bar .navbar-icon:before {
+  #navbar-administration .navbar-bar .navbar-icon:before {
     background-size: 42% auto;
     left: 0; /* LTR */
     width: 100%;
   }
-  .no-svg .drupal-navbar .navbar-bar .navbar-icon:before {
+  .no-svg #navbar-administration .navbar-bar .navbar-icon:before {
     background-size: auto auto;
   }
 }
 
 @media only screen and (min-width: 36em) {
-  .drupal-navbar .navbar-bar .navbar-icon {
+  #navbar-administration .navbar-bar .navbar-icon {
     background-position: left center; /* LTR */
     padding-left: 2.75em; /* LTR */
     padding-right: 1.3333em; /* LTR */
     text-indent: 0;
     width: auto;
   }
-  .drupal-navbar .navbar-bar .navbar-icon:before {
+  #navbar-administration .navbar-bar .navbar-icon:before {
     background-size: 100% auto;
     left: 0.6667em; /* LTR */
     width: 20px;
   }
-  .no-svg .drupal-navbar .navbar-bar .navbar-icon:before {
+  .no-svg #navbar-administration .navbar-bar .navbar-icon:before {
     background-size: auto auto;
   }
 }
@@ -280,37 +295,37 @@
 /**
  * Handle.
  */
-.drupal-navbar .navbar-icon.navbar-handle {
+#navbar-administration .navbar-icon.navbar-handle {
   width: 3em;
   text-indent: -9999px;
 }
-.drupal-navbar .navbar-icon.navbar-handle:before {
+#navbar-administration .navbar-icon.navbar-handle:before {
   background-image: url("../icons/5181c6/chevron-disc-down.svg");
   left: 0; /* LTR */
 }
-.no-svg .drupal-navbar .navbar-icon.navbar-handle:before {
+.no-svg #navbar-administration .navbar-icon.navbar-handle:before {
   background-image: url("../icons/5181c6/chevron-disc-down.png");
   left: 0; /* LTR */
 }
-.drupal-navbar .navbar-icon.navbar-handle.open:before {
+#navbar-administration .navbar-icon.navbar-handle.open:before {
   background-image: url("../icons/787878/chevron-disc-up.svg");
 }
-.no-svg .drupal-navbar .navbar-icon.navbar-handle.open:before {
+.no-svg #navbar-administration .navbar-icon.navbar-handle.open:before {
   background-image: url("../icons/787878/chevron-disc-up.png");
 }
-.drupal-navbar .menu .menu .navbar-icon.navbar-handle:before {
+#navbar-administration .menu .menu .navbar-icon.navbar-handle:before {
   background-image: url("../icons/5181c6/twistie-down.svg");
   background-size: 75%;
 }
-.no-svg .drupal-navbar .menu .menu .navbar-icon.navbar-handle:before {
+.no-svg #navbar-administration .menu .menu .navbar-icon.navbar-handle:before {
   background-image: url("../icons/5181c6/twistie-down.png");
   background-size: auto auto;
 }
-.drupal-navbar .menu .menu .navbar-icon.navbar-handle.open:before {
+#navbar-administration .menu .menu .navbar-icon.navbar-handle.open:before {
   background-image: url("../icons/787878/twistie-up.svg");
   background-size: 75%;
 }
-.no-svg .drupal-navbar .menu .menu .navbar-icon.navbar-handle.open:before {
+.no-svg #navbar-administration .menu .menu .navbar-icon.navbar-handle.open:before {
   background-image: url("../icons/787878/twistie-up.png");
   background-size: auto auto;
 }
@@ -318,13 +333,13 @@
 /**
  * Orientation toggle.
  */
-.drupal-navbar .navbar-toggle-orientation button {
+#navbar-administration .navbar-toggle-orientation button {
   height: 16px;
   padding: 0;
   text-indent: -999em;
   width: 20px;
 }
-.drupal-navbar .navbar-toggle-orientation button:before {
+#navbar-administration .navbar-toggle-orientation button:before {
   left: 0; /* LTR */
 }
 /**
@@ -332,28 +347,28 @@
  * RTL text direction and no SVG support, this little icon requires some very
  * specific targeting, setting and unsetting.
  */
-.drupal-navbar .navbar-toggle-orientation [value="vertical"]:before {
+#navbar-administration .navbar-toggle-orientation [value="vertical"]:before {
   background-image: url("../icons/bebebe/push-left.svg"); /* LTR */
 }
-.drupal-navbar .navbar-toggle-orientation [value="vertical"]:hover:before {
+#navbar-administration .navbar-toggle-orientation [value="vertical"]:hover:before {
   background-image: url("../icons/787878/push-left.svg"); /* LTR */
 }
-.no-svg .drupal-navbar .navbar-toggle-orientation [value="vertical"]:before {
+.no-svg #navbar-administration .navbar-toggle-orientation [value="vertical"]:before {
   background-image: url("../icons/bebebe/push-left.png"); /* LTR */
 }
-.no-svg .drupal-navbar .navbar-toggle-orientation [value="vertical"]:hover:before {
+.no-svg #navbar-administration .navbar-toggle-orientation [value="vertical"]:hover:before {
   background-image: url("../icons/787878/push-left.png"); /* LTR */
 }
-.drupal-navbar .navbar-toggle-orientation [value="horizontal"]:before {
+#navbar-administration .navbar-toggle-orientation [value="horizontal"]:before {
   background-image: url("../icons/bebebe/push-up.svg");
 }
-.drupal-navbar .navbar-toggle-orientation [value="horizontal"]:hover:before {
+#navbar-administration .navbar-toggle-orientation [value="horizontal"]:hover:before {
   background-image: url("../icons/787878/push-up.svg");
 }
-.no-svg .drupal-navbar .navbar-toggle-orientation [value="horizontal"]:before {
+.no-svg #navbar-administration .navbar-toggle-orientation [value="horizontal"]:before {
   background-image: url("../icons/bebebe/push-up.png");
 }
-.no-svg .drupal-navbar .navbar-toggle-orientation [value="horizontal"]:hover:before {
+.no-svg #navbar-administration .navbar-toggle-orientation [value="horizontal"]:hover:before {
   background-image: url("../icons/787878/push-up.png");
 }
 

@@ -215,17 +215,23 @@ function navbar_page_build(&$page) {
  */
 function navbar_pre_render($element) {
 
-  // Get the configured breakpoints to switch from vertical to horizontal
+  // Define the breakpoints to switch from vertical to horizontal
   // navbar presentation.
-  $media_queries = array();
-  foreach (breakpoints_breakpoint_load_all() as $breakpoint) {
-    if ($breakpoint->source_type === 'module' && $breakpoint->source === 'navbar') {
-      $media_queries['navbar']['breakpoints'][$breakpoint->source_type . '.' . $breakpoint->source . '.' . $breakpoint->name] = $breakpoint->breakpoint;
-    }
-  }
-  if (!empty($media_queries)) {
+  $breakpoints = array(
+    'narrow' => 'only screen and (min-width: 16.5em)',
+    'standard' => 'only screen and (min-width: 38.125em)',
+    'wide' => 'only screen and (min-width: 50em)',
+  );
+  // Allow for altering of the breakpoints.
+  drupal_alter('navbar_breakpoints', $breakpoints);
+
+  if (!empty($breakpoints)) {
     $element['#attached']['js'][] = array(
-      'data' => $media_queries,
+      'data' => array(
+        'navbar' => array(
+          'breakpoints' => $breakpoints,
+        ),
+      ),
       'type' => 'setting',
     );
   }
@@ -293,6 +299,7 @@ function navbar_pre_render_item($element) {
   if (!empty($element['tray'])) {
     // Provide attributes necessary for trays.
     $attributes += array(
+      'data-navbar-tab-trigger' => '',
       'data-navbar-tray' => $id . '-tray',
       'aria-owns' => $id,
       'role' => 'button',
@@ -302,7 +309,6 @@ function navbar_pre_render_item($element) {
     // Merge in module-provided attributes.
     $element['tab'] += array('#attributes' => array());
     $element['tab']['#attributes'] += $attributes;
-    $element['tab']['#attributes']['class'][] = 'trigger';
 
     // Provide attributes for the tray theme wrapper.
     $attributes = array(
@@ -551,7 +557,7 @@ function navbar_navbar() {
           '#theme' => 'links__navbar_user',
           '#links' => $links,
           '#attributes' => array(
-            'class' => array('menu'),
+            'class' => array('menu', 'navbar-menu-user'),
           ),
         ),
       ),
@@ -589,7 +595,7 @@ function navbar_navbar() {
         'tray' => array(
           '#heading' => t('User-defined shortcuts'),
           '#wrapper_attributes' => array(
-            'class' => array('navbar-tray-shortcuts'),
+            'class' => array('navbar-tray-shortcuts', 'navbar-menu-shortcuts'),
           ),
           'shortcuts' => $links,
           'configure' => $configure_link,
@@ -731,7 +737,6 @@ function navbar_library() {
     'dependencies' => array(
       array('navbar', 'modernizr'),
       array('system', 'jquery'),
-      array('navbar', 'navbar.jquery.on-off-shim'),
       array('navbar', 'underscore'),
       array('navbar', 'backbone'),
       array('navbar', 'navbar.matchmedia'),
@@ -824,31 +829,48 @@ function navbar_library() {
     ),
   );
 
-  $libraries['navbar.jquery.on-off-shim'] = array(
-    'title' => 'Shims the jQuery on and off methods for version previous to 1.7.',
+  // Support Tableheader displacement.
+  $libraries['navbar.tableheader'] = array(
+    'title' => 'Tableheader method to support D8 viewport displacement.',
     'version' => VERSION,
     'js' => array(
-      $path . '/js/jquery.on-off-shim.js' => array('group' => JS_LIBRARY),
+      // Load this file well after Overlay code has loaded.
+      $path . '/js/navbar-tableheader.js' => array('weight' => 100),
+      array(
+        'data' => array('tableHeaderOffset' => 'Drupal.navbar.height'),
+        'type' => 'setting'
+      ),
     ),
     'dependencies' => array(
       array('system', 'jquery'),
+      array('navbar', 'navbar.displace'),
     ),
   );
 
+  // Ensure that each 3rd party library dependency has a default variant.
+  $variants = variable_get('navbar_libraries_variants', array());
+  $default_variant = 'minified';
+  foreach (array('modernizr', 'underscore', 'backbone') as $lib) {
+    $variants[$lib] = (!empty($variants[$lib])) ? $variants[$lib] : $default_variant;
+  }
+  // Convert Libraries module data structures to library data structures.
   // Modernizr
-  $libraries['modernizr'] = navbar_convert_libraries_to_library(libraries_load('modernizr'), array(
+  $libraries['modernizr'] = navbar_convert_libraries_to_library(libraries_detect('modernizr'), array(
+    'variant' => $variants['modernizr'],
     'group' => JS_LIBRARY,
     'weight' => -100,
   ));
 
   // Underscore
-  $libraries['underscore'] = navbar_convert_libraries_to_library(libraries_load('underscore'), array(
+  $libraries['underscore'] = navbar_convert_libraries_to_library(libraries_detect('underscore'), array(
+    'variant' => $variants['underscore'],
     'group' => JS_LIBRARY,
     'weight' => -20,
   ));
 
   // Backbone
-  $libraries['backbone'] = navbar_convert_libraries_to_library(libraries_load('backbone'), array(
+  $libraries['backbone'] = navbar_convert_libraries_to_library(libraries_detect('backbone'), array(
+    'variant' => $variants['backbone'],
     'group' => JS_LIBRARY,
     'weight' => -19,
   ));
@@ -860,12 +882,36 @@ function navbar_library() {
  * Implements hook_library_alter().
  */
 function navbar_library_alter(&$libraries, $module) {
+  $jquery_version = &drupal_static(__FUNCTION__, NULL);
+
+  if ($module == 'system') {
+    $jquery_version = $libraries['jquery']['version'];
+  }
+  if ($jquery_version && $module == 'navbar') {
+    $path = drupal_get_path('module', 'navbar');
+    // If the version of jQuery is old, we need to add `on` and `off`.
+    if ($jquery_version < '1.7') {
+      $libraries['navbar']['js'][$path . '/js/jquery/ducktape.events.js'] = array('group' => JS_LIBRARY);
+    }
+  }
+
   if ($module === 'overlay' && !empty($libraries)) {
     // Unset the child CSS file from Overlay and add our own.
     if (!empty($libraries['child']['css'])) {
       unset($libraries['child']['css']['modules/overlay/overlay-child.css']);
     }
     $libraries['child']['css'][drupal_get_path('module', 'navbar') . '/css/navbar-overlay-child.css'] = array();
+  }
+}
+
+/**
+ * Implements hook_js_alter().
+ */
+function navbar_js_alter(&$javascript) {
+  // Only load the tableheader offset script if the core tableheader script
+  // is loaded.
+  if (isset($javascript['misc/tableheader.js'])) {
+    drupal_add_library('navbar', 'navbar.tableheader');
   }
 }
 
@@ -883,65 +929,105 @@ function navbar_libraries_info() {
     'download url' => 'http://modernizr.com/download/#-inputtypes-svg-touch-cssclasses-addtest-teststyles-prefixes-elem_details',
     'files' => array(
       'js' => array(
-        'modernizr.js',
+        'modernizr.min.js',
       ),
     ),
-    'variants' => array(
-      // All properties defined for 'minified' override top-level properties.
-      'minified' => array(
-        'files' => array(
-          'js' => array(
-            'modernizr.min.js',
+    'version arguments' => array(
+      'file' => 'modernizr.js',
+      'pattern' => '/Modernizr\s*[Vv]?([\d\.]+)/',
+    ),
+    'versions' => array(
+      '2.6.2' => array(
+        'variants' => array(
+          'source' => array(
+            'files' => array(
+              'js' => array(
+                'modernizr.js',
+              ),
+            ),
+          ),
+          'minified' => array(
+            'files' => array(
+              'js' => array(
+                'modernizr.min.js',
+              ),
+            ),
           ),
         ),
       ),
     ),
-    'version' => '2.6.2',
   );
 
   $libraries['underscore'] = array(
     'name' => 'Underscore',
     'vendor url' => 'http://documentcloud.github.io/backbone/',
-    'download url' => 'https://github.com/documentcloud/underscore/tree/1.4.4',
+    'download url' => 'https://github.com/jashkenas/underscore/archive/1.5.2.zip',
+    // Declare a default set of files.
     'files' => array(
       'js' => array(
-        'underscore.js',
+        'underscore-min.js',
       ),
     ),
-    'variants' => array(
-      // All properties defined for 'minified' override top-level properties.
-      'minified' => array(
-        'files' => array(
-          'js' => array(
-            'underscore-min.js',
+    'version arguments' => array(
+      'file' => 'underscore.js',
+      'pattern' => '/Underscore.js\s*([\d\.]+)/',
+    ),
+    'versions' => array(
+      '1.4.4' => array(
+        'variants' => array(
+          'source' => array(
+            'files' => array(
+              'js' => array(
+                'underscore.js',
+              ),
+            ),
+          ),
+          'minified' => array(
+            'files' => array(
+              'js' => array(
+                'underscore-min.js',
+              ),
+            ),
           ),
         ),
       ),
     ),
-    'version' => '1.4.4',
   );
 
   $libraries['backbone'] = array(
     'name' => 'Backbone',
     'vendor url' => 'http://documentcloud.github.io/backbone/',
-    'download url' => 'https://github.com/documentcloud/backbone/tree/1.0.0',
+    'download url' => 'https://github.com/jashkenas/backbone/archive/1.1.0.zip',
     'files' => array(
       'js' => array(
-        'backbone.js',
+        'backbone-min.js',
       ),
     ),
-    'variants' => array(
-      // All properties defined for 'minified' override top-level properties.
-      'minified' => array(
-        'files' => array(
-          'js' => array(
-            'backbone-min.js',
+    'version arguments' => array(
+      'file' => 'backbone.js',
+      'pattern' => '/Backbone.js\s*([\d\.]+)/',
+    ),
+    'versions' => array(
+      '1.0.0' => array(
+        'variants' => array(
+          'source' => array(
+            'files' => array(
+              'js' => array(
+                'backbone.js',
+              ),
+            ),
+          ),
+          'minified' => array(
+            'files' => array(
+              'js' => array(
+                'backbone-min.js',
+              ),
+            ),
           ),
         ),
       ),
     ),
-    'version' => '1.0.0',
-    'dependencies' => array('underscore'),
+    'dependencies' => array('underscore (>=1.4.4)'),
   );
 
   return $libraries;
@@ -976,25 +1062,40 @@ function _navbar_get_subtree_hash() {
  *
  * What is this necessary? I don't see any way from the Libraries module API
  * to get an array that corresponds to what hook_library expects.
+ *
+ * @return Array
+ *  Returns a standard Drupal library definition structure.
  */
 function navbar_convert_libraries_to_library($library, $options = array()) {
-
-  // If the library wasn't loaded, don't bother converting it.
-  if (!$library['loaded']) {
+  // If the library wasn't installed, don't bother converting it.
+  if (!$library['installed']) {
     return array();
   }
 
-  $converted = array(
-    'title' => $library['name'],
-    'website' => $library['vendor url'],
-    'version' => $library['version'],
-  );
+  $converted = array();
 
-  // This is not ideal, but I don't see any other way to convert these files.
-  // It's a bit hard-coded to expect just one file, but that's all we have for
-  // now, so it stays.
-  $filename = array_keys($library['files']['js']);
-  $converted['js'][$library['library path'] . '/' . $filename[0]] = $options;
+  // The variant will be something like 'minified' or 'source'.
+  $variant = $options['variant'];
+  unset($options['variant']);
+
+  // If variants are defined, prefer the them.
+  $files = (!empty($library['variants'][$variant]['files'])) ? $library['variants'][$variant]['files'] : array();
+  // If no variants are defined, check for default files.
+  $files = (empty($files) && !empty($library['files'])) ? $library['files'] : $files;
+  // Define the library if files exist for it.
+  if (!empty($files)) {
+    // This is the basic structure expected by hook_library().
+    $converted = array(
+      'title' => $library['name'],
+      'website' => $library['vendor url'],
+      'version' => $library['version'],
+    );
+    foreach ($files as $type => $paths) {
+      foreach($paths as $filename => $data) {
+        $converted[$type][$library['library path'] . '/' . $filename] = $options;
+      }
+    }
+  }
 
   return $converted;
 }
@@ -1019,4 +1120,24 @@ function navbar_suppress($set = TRUE) {
     $suppress = TRUE;
   }
   return $suppress;
+}
+
+/**
+ * Implements hook_modernizr_info().
+ */
+function navbar_modernizr_info() {
+  $tests = array();
+
+  // Feature tests
+  $tests[] = 'inputtypes';
+  $tests[] = 'svg';
+  $tests[] = 'touch';
+  $tests[] = 'elem_details';
+
+  // Extensibility
+  $tests[] = 'addtest';
+  $tests[] = 'teststyles';
+  $tests[] = 'prefixes';
+
+  return $tests;
 }

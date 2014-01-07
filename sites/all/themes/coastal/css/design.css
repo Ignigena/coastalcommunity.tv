@@ -1556,7 +1556,8 @@ a.feed-icon {
   position: relative;
 }
 
-.view-location .views-field-field-address {
+.view-location .views-field-field-address,
+.view-locations .view-footer {
   position: absolute;
   bottom: 65px;
   background: rgba(0,0,0,0.7);
@@ -1568,7 +1569,14 @@ a.feed-icon {
   display: none;
 }
 
-.view-location .views-field-field-address a {
+.view-locations .view-footer {
+  bottom: 0;
+  line-height: 50px;
+  display: block;
+}
+
+.view-location .views-field-field-address a,
+.view-locations .view-footer a {
   color: whitesmoke;
 }
 

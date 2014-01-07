@@ -15,3 +15,23 @@
       drupal_set_title("Coastal Blog");
     }
   }
+  
+  function coastal_views_pre_render(&$view) {
+    if ($view->name == "locations") {
+      // Adds the human-readable address field to the locations map.
+      $view->set_item('default', 'footer', 'text', 'content', $view->result[0]->field_field_address[0]['rendered']['#markup']);
+      
+      $location_address = $view->result[0]->field_field_address[0]['raw']['value'];
+
+      $options = array(
+        'id' => 'area',
+        'table' => 'views',
+        'field' => 'area',
+        'empty' => FALSE,
+        'content' => l($location_address, 'http://maps.google.com/?q=' . $location_address, array('attributes' => array('target'=>'_blank'))),
+        'format' => 'filtered_html',
+        'tokenize' => 0,
+      );
+      $view->display_handler->set_option('footer', array('text' => $options));
+    }
+  }

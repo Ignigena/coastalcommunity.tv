@@ -17,7 +17,7 @@
   }
   
   function coastal_views_pre_render(&$view) {
-    if ($view->name == "locations") {
+    if ($view->name == "locations" && $view->result[0]->field_field_address) {
       // Adds the human-readable address field to the locations map.
       $view->set_item('default', 'footer', 'text', 'content', $view->result[0]->field_field_address[0]['rendered']['#markup']);
       

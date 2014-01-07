@@ -12,6 +12,6 @@
   
   function coastal_page_alter(&$page) {
     if (arg(0) == "blog" && !arg(1)) {
-      drupal_set_title("Happenings Blog");
+      drupal_set_title("Coastal Blog");
     }
   }

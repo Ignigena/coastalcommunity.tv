@@ -1671,3 +1671,25 @@ body.html.logged-in.navbar-administration.navbar-tray-open.navbar-fixed.navbar-h
 .page-user .field--name-field-social img {
   margin-bottom: 7px;
 }
+
+.page-node-95 div#block-views-location-block.block.block--views.contextual-links-region.block--views-location-block {
+  position: absolute;
+  top: -20px;
+  width: 700px;
+}
+
+.page-node-95 article.node.node--page.node--full.node--page--full {
+  margin-top: 270px;
+}
+
+.page-node-95 .views-field-field-address {
+  display: block;
+}
+
+.page-node-95 .row-fluid {
+  text-align: center;
+}
+
+.page-node-95 p {
+  font-size: 105%;
+}

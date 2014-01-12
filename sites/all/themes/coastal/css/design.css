@@ -355,7 +355,8 @@ body > .navbar .brand {
 }
 
 #block-views-instagram-feed-block .view-header a,
-#block-views-happenings-feed-block h2 {
+#block-views-happenings-feed-block h2,
+.page-node-95 h3 {
   color: white;
   font-size: 20px;
   font-family: Lato;
@@ -1683,7 +1684,7 @@ body.html.logged-in.navbar-administration.navbar-tray-open.navbar-fixed.navbar-h
 }
 
 .page-node-95 article.node {
-  margin-top: 270px;
+  margin-top: 290px;
 }
 
 .page-node-95 .views-field-field-address {
@@ -1694,6 +1695,20 @@ body.html.logged-in.navbar-administration.navbar-tray-open.navbar-fixed.navbar-h
   text-align: center;
 }
 
+.page-node-95 h3 {
+  border-bottom: 3px solid white;
+  margin-bottom: 10px;
+}
+
+.page-node-95 .span4 {
+  background: #bcbdc0;
+  height: 100px;
+}
+
 .page-node-95 p {
   font-size: 105%;
+}
+
+.page-node-95 a {
+  color: #333;
 }

@@ -1678,6 +1678,10 @@ body.html.logged-in.navbar-administration.navbar-tray-open.navbar-fixed.navbar-h
   width: 700px;
 }
 
+.page-node-95 .leaflet-control-container {
+  display: none;
+}
+
 .page-node-95 article.node {
   margin-top: 270px;
 }

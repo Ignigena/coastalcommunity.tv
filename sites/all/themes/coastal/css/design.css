@@ -1672,13 +1672,13 @@ body.html.logged-in.navbar-administration.navbar-tray-open.navbar-fixed.navbar-h
   margin-bottom: 7px;
 }
 
-.page-node-95 div#block-views-location-block.block.block--views.contextual-links-region.block--views-location-block {
+.page-node-95 div#block-views-location-block {
   position: absolute;
   top: -20px;
   width: 700px;
 }
 
-.page-node-95 article.node.node--page.node--full.node--page--full {
+.page-node-95 article.node {
   margin-top: 270px;
 }
 

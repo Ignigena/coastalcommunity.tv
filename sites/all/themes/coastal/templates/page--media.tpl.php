@@ -1,3 +1,29 @@
+<div id="mobile-navbar" role="banner" class="navbar navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+
+      <div class="nav-collapse collapse">
+        <nav role="navigation">
+          <ul class="nav">
+          <?php
+            foreach ($main_menu as $class => $menu) {
+          ?>
+            <li<?php if (strstr($class, 'active')) { ?> class="active"<?php } ?>><a href="/<?php print drupal_get_path_alias($menu['href']); ?>"><?php print $menu['title']; ?></a></li>
+          <?php
+            }
+          ?>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+
 <header id="header" role="banner">
   <div class="container">
     <?php print render($page['header_top']); ?>

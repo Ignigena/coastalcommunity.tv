@@ -350,6 +350,10 @@ body > .navbar .brand {
   }
 }
 
+@media (min-width: 568px) {
+  #mobile-navbar { display: none; }
+}
+
 #block-views-instagram-feed-block .view-header a,
 #block-views-happenings-feed-block h2 {
   color: white;

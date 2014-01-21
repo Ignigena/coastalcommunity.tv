@@ -1,4 +1,13 @@
 <?php
+  // Redirect www requests to the bare-domain version.
+  if (isset($_SERVER['PANTHEON_ENVIRONMENT']) && $_SERVER['PANTHEON_ENVIRONMENT'] === 'live') {
+    if ($_SERVER['HTTP_HOST'] == 'www.coastalcommunity.tv') {
+      header('HTTP/1.0 301 Moved Permanently');
+      header('Location: http://coastalcommunity.tv'. $_SERVER['REQUEST_URI']);
+      exit();
+    }
+  }
+
   extract(json_decode($_SERVER['PRESSFLOW_SETTINGS'], TRUE));
   require_once DRUPAL_ROOT . '/sites/all/modules/domain/settings.inc';
 

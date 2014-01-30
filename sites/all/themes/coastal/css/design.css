@@ -1715,7 +1715,7 @@ body.html.logged-in.navbar-administration.navbar-tray-open.navbar-fixed.navbar-h
 
 /* First-visit campus selector */
 
-header#header {
+.front header#header {
   background: #00aeef;
   margin-bottom: -3px;
 }

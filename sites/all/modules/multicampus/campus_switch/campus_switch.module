@@ -97,7 +97,7 @@ function theme_campus_switch_block($variables) {
       if ($domain['domain_id'] == $_domain['domain_id']) {
         $title = '<strong>' . $title . '</strong>';
       }
-      $items[$i]['data'] = l($title, domain_get_uri($domain), array('absolute' => TRUE, 'html' => TRUE));
+      $items[$i]['data'] = l($title, domain_get_uri($domain) . '?switch', array('absolute' => TRUE, 'html' => TRUE));
       $i++;
     }
   }

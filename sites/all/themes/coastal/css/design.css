@@ -1712,3 +1712,57 @@ body.html.logged-in.navbar-administration.navbar-tray-open.navbar-fixed.navbar-h
 .page-node-95 a {
   color: #333;
 }
+
+/* First-visit campus selector */
+
+header#header {
+  background: #00aeef;
+  margin-bottom: -3px;
+}
+
+#block-campus-switch-first-visit-campus-select {
+  display: none;
+  text-align: center;
+  color: white;
+}
+
+#block-campus-switch-first-visit-campus-select h2.block__title {
+  font-family: Lato;
+  font-weight: 200;
+  margin-top: 20px;
+}
+
+#block-campus-switch-first-visit-campus-select div.block__content {
+  margin-top: -10px;
+}
+
+#block-campus-switch-first-visit-campus-select div.block__content ul {
+  list-style: none;
+  margin: 0;
+  margin-top: 30px;
+  height: 90px;
+}
+
+#block-campus-switch-first-visit-campus-select div.block__content li {
+  float: left;
+  width: 50%;
+  cursor: pointer;
+}
+
+#block-campus-switch-first-visit-campus-select div.block__content li img {
+  margin-top: -115px; 
+}
+
+#block-campus-switch-first-visit-campus-select div.block__content li:first-child img {
+  float: left;
+}
+
+#block-campus-switch-first-visit-campus-select div.block__content li:last-child img {
+  float: right;
+}
+
+#block-campus-switch-first-visit-campus-select li a {
+  font-family: Lato;
+  font-size: 20px;
+  color: white;
+}

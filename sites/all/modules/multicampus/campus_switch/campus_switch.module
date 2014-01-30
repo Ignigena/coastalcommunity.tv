@@ -35,6 +35,10 @@ function campus_switch_block_view($delta = '') {
         'subject' => t('Select your campus:'),
         'content' => array(
           '#markup' => $output,
+          '#attached' => array('js' => array(
+            drupal_get_path('module', 'campus_switch') . '/jquery.cookie.js',
+            drupal_get_path('module', 'campus_switch') . '/campus_switch.js',
+          )),
         ),
       );
       break;
@@ -108,7 +112,7 @@ function theme_campus_switch_block($variables) {
 function theme_first_visit_campus_select_block($variables) {
   $_domain = domain_get_domain();
   $domains = $variables['domains'];
-  
+
   $output = '';
   $items = array();
   $i = 0;
@@ -116,14 +120,11 @@ function theme_first_visit_campus_select_block($variables) {
   foreach ($domains as $domain) {
     if ($domain['valid']) {
       $domain_fields = domain_fieldable_load($domain['domain_id']);
-      $title = $domain['sitename'];
-      if ($domain['domain_id'] == $_domain['domain_id']) {
-        $title = '<strong>' . $title . '</strong>';
-      }
       $lat_lng = $domain_fields->field_location['und'][0]['lat'] . ',' . $domain_fields->field_location['und'][0]['lng'];
       $items[$i]['data'] = '<img src="http://maps.googleapis.com/maps/api/staticmap?center=' . $lat_lng . '&zoom=13&size=150x200&maptype=roadmap&markers=color:red%7C' . $lat_lng . '&sensor=false" />';
-      $items[$i]['data'] .= l($title, domain_get_uri($domain), array('absolute' => TRUE, 'html' => TRUE));
+      $items[$i]['data'] .= '<a>' . $domain['sitename'] . '</a>';
       $items[$i]['data'] .= $domain_fields->field_service_times['und'][0]['safe_value'];
+      $items[$i]['location'] = $domain['path'];
       $i++;
     }
   }

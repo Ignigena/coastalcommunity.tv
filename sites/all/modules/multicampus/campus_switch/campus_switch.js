@@ -1,8 +1,7 @@
 (function ($) {
   $(document).ready(function($) {
-    if (!window.location.origin)
-      window.location.origin = window.location.protocol + '//' + window.location.host;
-    window.location.origin = window.location.origin + '/';
+    if (!window.location.origin) window.location.origin = window.location.protocol + '//' + window.location.host;
+    currentLocation = window.location.origin + '/';
 
     if (window.location.href.substring(window.location.href.length - 7) == '?switch') {
       $.cookie('campus_select', window.location.origin, { expires: 365, path: '/' })
@@ -15,7 +14,7 @@
         var location = $(this).attr('location');
         $.cookie('campus_select', location, { expires: 365, path: '/' })
 
-        if (window.location.origin == location) {
+        if (currentLocation == location) {
           $('#block-campus-switch-first-visit-campus-select').slideToggle(400);
           $('body').removeClass('first-visit');
         } else {

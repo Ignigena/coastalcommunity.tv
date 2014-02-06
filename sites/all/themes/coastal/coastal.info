@@ -20,5 +20,6 @@ stylesheets[screen][] = bootstrap/css/bootstrap-responsive.min.css
 stylesheets[screen][] = font-awesome/css/font-awesome.min.css
 stylesheets[screen][] = zocial/zocial.css
 stylesheets[screen][] = css/design.css
+stylesheets[screen][] = css/styles.css
 
 scripts[] = bootstrap/js/bootstrap.min.js

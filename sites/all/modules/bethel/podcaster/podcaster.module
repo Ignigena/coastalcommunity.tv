@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function podcaster_menu() {
+  // Autocomplete widget to link Podcast media to entity.
+  $items['bethel/podcaster/autocomplete'] = array(
+    'page callback' => '_podcaster_autocomplete',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Generates a JSON list of autocomplete matches for an entity.
+ *
+ * @param string $string
+ *   The text entered, for which matching entities are sought.
+ */
+function _podcaster_autocomplete($string = '') {
+  $matches = array();
+
+  $return = db_select('node', 'n')
+    ->fields('n', array('title', 'nid'))
+    ->condition('n.title', '%' . db_like($string) . '%', 'LIKE')
+    ->execute();
+
+  foreach ($return as $row) {
+    $matches[$row->nid] = check_plain($row->title);
+  }
+
+  drupal_json_output($matches);
+}

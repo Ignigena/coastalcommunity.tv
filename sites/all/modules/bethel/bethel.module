@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * Implements hook_html_head_alter().
+ */
+function bethel_html_head_alter(&$head_elements) {
+  $bethel_generator = "Bethel, powered by Drupal (http://bethel.io)";
+  
+  if (isset($head_elements['system_meta_generator'])) {
+    $head_elements['system_meta_generator']['#attributes']['content'] = $bethel_generator;
+    $head_elements['system_meta_generator']['#attached']['drupal_add_http_header'][0][1] = $bethel_generator;
+  }
+  if (isset($head_elements['metatag_generator'])) {
+    $head_elements['metatag_generator']['#value'] = $bethel_generator;
+    $head_elements['metatag_generator']['#attached']['drupal_add_http_header'][0][1] = $bethel_generator;
+  }
+}

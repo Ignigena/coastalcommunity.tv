@@ -1,0 +1,4 @@
+name = Bethel
+package = Bethel
+description = Integration with the Bethel platform.
+core = 7.x

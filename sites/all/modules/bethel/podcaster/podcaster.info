@@ -1,0 +1,5 @@
+name = Podcaster
+package = Bethel
+description = Provides integration with Podcaster component.
+core = 7.x
+dependencies[] = bethel

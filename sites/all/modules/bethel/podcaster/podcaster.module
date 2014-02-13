@@ -29,8 +29,10 @@ function _podcaster_autocomplete($string = '') {
     ->execute();
 
   foreach ($return as $row) {
-    $matches[$row->nid] = check_plain($row->title);
+    $matches[] = $row->title . ' [id:' . $row->nid . ']';
   }
 
+  header('Access-Control-Allow-Origin: *');
+  $matches = array('results' => $matches);
   drupal_json_output($matches);
 }

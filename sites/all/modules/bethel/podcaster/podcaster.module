@@ -23,6 +23,18 @@ function podcaster_menu() {
   return $items;
 }
 
+/**
+ * Implements hook_permission().
+ */
+function podcaster_permission() {
+  $permissions = array(
+    'administer podcaster settings' => array(
+      'title' => t('Administer Podcaster settings'),
+    ),
+  );
+  return $permissions;
+}
+
 function podcaster_admin() {
   $form = array();
   $node_types = node_type_get_types();
@@ -54,9 +66,15 @@ function _podcaster_autocomplete($string = '') {
   $matches = array();
 
   $return = db_select('node', 'n')
-    ->fields('n', array('title', 'nid'))
-    ->condition('n.title', '%' . db_like($string) . '%', 'LIKE')
-    ->execute();
+    ->fields('n', array('title', 'nid', 'type'))
+    ->condition('n.title', '%' . db_like($string) . '%', 'LIKE');
+
+  foreach (variable_get('podcaster_nodetypes', array()) as $condition) {
+    if ($condition)
+      $return->condition('n.type', $condition, '=');
+  }
+
+  $return = $return->execute();
 
   foreach ($return as $row) {
     $matches[] = $row->title . ' [id:' . $row->nid . ']';

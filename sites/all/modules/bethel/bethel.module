@@ -1,6 +1,22 @@
 <?php
 
 /**
+ * Implements hook_menu().
+ */
+function bethel_menu() {
+  $items['admin/config/bethel'] = array(
+    'title' => 'Bethel',
+    'page callback' => 'system_admin_menu_block_page',
+    'access arguments' => array('access administration pages'),
+    'file path' => drupal_get_path('module', 'system'),
+    'file' => 'system.admin.inc',
+    'weight' => -99,
+  );
+
+  return $items;
+}
+
+/**
  * Implements hook_html_head_alter().
  */
 function bethel_html_head_alter(&$head_elements) {

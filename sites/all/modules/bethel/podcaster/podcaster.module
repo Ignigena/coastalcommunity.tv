@@ -10,8 +10,38 @@ function podcaster_menu() {
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
+  // Settings for what node types show up in autocomplete form.
+  $items['admin/config/bethel/podcaster'] = array(
+    'title' => 'Podcaster',
+    'description' => 'Select which node types show up when linking to Podcaster',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('podcaster_admin'),
+    'access arguments' => array('administer podcaster settings'),
+    'type' => MENU_NORMAL_ITEM,
+   );
 
   return $items;
+}
+
+function podcaster_admin() {
+  $form = array();
+  $node_types = node_type_get_types();
+  $site_nodetypes = array();
+
+  foreach ($node_types as $type) {
+    $site_nodetypes[$type->type] = $type->name;
+  }
+
+  $form['podcaster_nodetypes'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Enabled node types'),
+    '#options' => $site_nodetypes,
+    '#default_value' => variable_get('podcaster_nodetypes', array()),
+    '#description' => t("Only node types checked above will be available for autocomplete in Podcaster."),
+    '#required' => TRUE,
+  );
+
+  return system_settings_form($form);
 }
 
 /**

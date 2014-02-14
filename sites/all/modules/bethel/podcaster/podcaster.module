@@ -36,3 +36,60 @@ function _podcaster_autocomplete($string = '') {
   $matches = array('results' => $matches);
   drupal_json_output($matches);
 }
+
+/**
+ * Implements hook_block_info().
+ */
+function podcaster_block_info() {
+  $blocks['audio-player'] = array(
+    'info' => t('Podcaster: Audio Player'), 
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function podcaster_block_view($delta = '') {
+  $block['subject'] = t('Audio Player');
+  
+  if (arg(1)) {
+    $node = arg(1);
+    $playlist = array();
+
+    $associated = drupal_http_request('http://api.bethel.io/podcast/' . $_SERVER['BETHEL_PODCASTER'] . '/associated/' . $node);
+    if (!isset($associated->error)) {
+      $associated = json_decode($associated->data);
+  
+      foreach ($associated as $media) {
+        $playlist[] = array(
+          'filename' => $media->title,
+          'url' => $media->url,
+        );
+      }
+      if (count($playlist) >= 1) {
+        $block['content'] = theme('jplayer', array(
+          'entity_type' => 'node',
+          'entity' => node_load($node),
+          'field_name' => 'podcaster',
+          'items' => $playlist,
+          'settings' => array(
+            'autoplay' => 0,
+            'continuous' => 0,
+            'solution' => 'html, flash',
+            'preload' => 'metadata',
+            'volume' => 80,
+            'muted' => FALSE,
+            'repeat' => 'none',
+            'backgroundColor' => '000000',
+            'mode' => 'playlist',
+          ),
+        ));
+      }
+    }
+  }
+
+  return $block;
+}

@@ -1,4 +1,30 @@
 <?php
+
+/**
+ * Implements hook_library().
+ */
+function coastal_library() {
+  $theme = drupal_get_path('theme', 'coastal');
+  $bootstrap = libraries_get_path('bootstrap');
+  $fontawesome = libraries_get_path('font-awesome');
+  $zocial = libraries_get_path('zocial');
+
+  $libraries['coastal.theme'] = array(
+    'js' => array(
+      $bootstrap . '/js/bootstrap.min.js' => array('group' => JS_THEME),
+      $theme . '/js/coastal.js' => array('group' => JS_THEME),
+    ),
+    'css' => array(
+      $bootstrap . '/css/bootstrap.min.css',
+      $bootstrap . '/css/bootstrap-responsive.min.css',
+      $fontawesome . '/css/font-awesome.min.css',
+      $zocial . '/zocial.css',
+    ),
+  );
+
+  return $libraries;
+}
+
   // Provide < PHP 5.3 support for the __DIR__ constant.
   if (!defined('__DIR__')) {
     define('__DIR__', dirname(__FILE__));
@@ -7,7 +33,7 @@
   require_once __DIR__ . '/includes/form.inc';
 
   function coastal_preprocess_html(&$variables) {
-    drupal_add_js(drupal_get_path('theme', 'coastal') . '/js/coastal.js', array('group' => JS_THEME));
+    drupal_add_library('coastal', 'coastal.theme');
   }
   
   function coastal_page_alter(&$page) {

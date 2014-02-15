@@ -4761,8 +4761,10 @@ function drupal_get_library($module, $name = NULL) {
       if (is_array($data)) {
         // Add default elements to allow for easier processing.
         $module_libraries[$key] += array('dependencies' => array(), 'js' => array(), 'css' => array());
-        foreach ($module_libraries[$key]['js'] as $file => $options) {
-          $module_libraries[$key]['js'][$file]['version'] = $module_libraries[$key]['version'];
+        if (isset($module_libraries[$key]['version'])) {
+          foreach ($module_libraries[$key]['js'] as $file => $options) {
+            $module_libraries[$key]['js'][$file]['version'] = $module_libraries[$key]['version'];
+          }
         }
       }
     }

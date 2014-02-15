@@ -500,23 +500,6 @@ body > .navbar .brand {
 	border-left: 9px solid #58585a;
 }
 
-.page-connect-students .view-student-ministries .view-content {
-  margin-left: -20px;
-  text-align: center;
-}
-
-.page-connect-students .view-student-ministries .view-content .views-field-field-image {
-  margin: 15px 0 10px 0;
-}
-
-.page-connect-students .view-student-ministries .view-content .views-field-name {
-  font-size: 18px;
-}
-
-.page-connect-students .view-student-ministries .view-content .views-field-description {
-  font-size: 12px;
-}
-
 .l-region--footer {
   background: #231f20;
   margin-bottom: -10px;
@@ -1452,68 +1435,6 @@ article.node--page--full .field--name-field-image.video-player:hover .field__ite
 a.feed-icon {
   float: right;
   margin-top: 30px
-}
-
-.section-connect.page-taxonomy-term h1.title {
-  text-indent: -9999px;
-  text-overflow: hidden;
-}
-
-.section-connect.page-taxonomy-term .field--name-field-logo {
-  position: absolute;
-  top: 10px;
-  margin-left: -249px;
-}
-
-.section-connect div#block-views-ministries-location-block {
-  margin-top: -20px;
-  width: 240px;
-}
-
-.section-connect div.field--name-field-subtitle {
-  font-family: Lato;
-  font-size: 24px;
-  line-height: 45px;
-}
-
-.section-connect div.views-field.views-field-field-address {
-  font-size: 11px;
-  line-height: 25px;
-}
-
-.section-connect div.views-field-field-meeting-time {
-  font-family: Lato;
-  font-size: 18px;
-  line-height: 40px;
-}
-
-.section-connect .term-listing-heading {
-  margin-bottom: 20px;
-}
-
-.section-connect article h2 {
-  font-family: Lato;
-}
-
-.section-connect article ul.links {
-  margin-bottom: 20px;
-}
-
-.view-students-ministries table {
-  width: 100%;
-}
-
-.view-students-ministries td {
-  width: 50%;
-  border-sizing: border-box;
-  text-align: center;
-  font-family: Lato;
-  font-size: 18px;
-  line-height: 35px;
-}
-
-.view-students-ministries td:hover {
-  background: #f5f6fa;
 }
 
 .view-location {

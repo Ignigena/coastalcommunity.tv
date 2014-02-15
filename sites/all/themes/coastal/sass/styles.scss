@@ -58,14 +58,14 @@
         text-decoration: none;
         color: white;
         &:hover {
-          background: $light-blue;
+          background: $light-primary;
         }
         strong {
           margin: -4px -10px;
           margin-right: -10px;
           padding: 6px 10px;
-          @include background-image(linear-gradient($light-blue, $dark-blue));
-          border-top: 1px solid $light-blue;
+          @include background-image(linear-gradient($light-primary, $dark-primary));
+          border-top: 1px solid $light-primary;
         }
       }
       div.item-list {
@@ -75,17 +75,37 @@
   }
 }
 
+/* First-visit campus selector */
+
+.front header#header {
+  background: $light-primary;
+  margin-bottom: -3px;
+  @media (max-width: $break-mid) {
+    background: transparent;
+  }
+}
+
 #block-campus-switch-first-visit-campus-select {
   display: none;
   text-align: center;
   color: white;
+  @media (max-width: $break-mid) {
+    background: $light-primary;
+    margin: -20px 0 -50px;
+  }
   h2.block__title {
     font-family: $style-font;
     font-weight: 200;
     margin-top: 20px;
+    @media (max-width: $break-mid) {
+      padding-top: 30px;
+    }
   }
   div.block__content {
     margin-top: -10px;
+    @media (max-width: $break-mid) {
+      padding: 0 20px 30px;
+    }
     ul {
       list-style: none;
       margin: 0;
@@ -95,8 +115,15 @@
         float: left;
         width: 50%;
         cursor: pointer;
+        @media (max-width: $break-mid) {
+          float: none;
+          width: 100%;
+        }
         img {
-          margin-top: -115px; 
+          margin-top: -115px;
+          @media (max-width: $break-mid) {
+            display: none;
+          }
         }
         &:first-child img {
           float: left;

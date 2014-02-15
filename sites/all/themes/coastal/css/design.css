@@ -1622,10 +1622,3 @@ body.html.logged-in.navbar-administration.navbar-tray-open.navbar-fixed.navbar-h
 .page-node-95 a {
   color: #333;
 }
-
-/* First-visit campus selector */
-
-.front header#header {
-  background: #00aeef;
-  margin-bottom: -3px;
-}

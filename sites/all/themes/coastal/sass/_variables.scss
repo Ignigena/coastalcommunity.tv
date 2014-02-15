@@ -1,5 +1,7 @@
 
-$break-mid : 568px;
+$break-mobile : 568px;
+$break-tablet : 767px;
+$break-desktop : 979px;
 
 $light-grey : #bcbdc0;
 $light-primary : #00aeef;
@@ -8,3 +10,14 @@ $dark-primary : #0091c8;
 $text : #231f20;
 
 $style-font : Lato;
+
+@mixin primary-gradient {
+  @include background-image(linear-gradient($light-primary, $dark-primary));
+}
+
+@mixin primary-gradient-block {
+  @include primary-gradient;
+  color: white;
+  position: relative;
+  text-decoration: none;
+}

@@ -2,11 +2,121 @@
 @import "variables";
 @import url(http://fonts.googleapis.com/css?family=Lato:300,400,700);
 
+body.html.logged-in.navbar-administration.navbar-tray-open.navbar-fixed.navbar-vertical,
+body.html.logged-in.navbar-administration.navbar-fixed.navbar-vertical,
+body.html.logged-in.navbar-administration.navbar-fixed.navbar-horizontal {
+  padding-top: 39px !important;
+}
+
+body.html.logged-in.navbar-administration.navbar-tray-open.navbar-fixed.navbar-horizontal {
+  padding-top: 79px !important;
+}
+
+body {
+  @media (max-width: $break-tablet) {
+    padding: 0 !important;
+  }
+  .maxwidth, .container {
+    max-width: 940px;
+    margin: 0 auto;
+  }
+  #main {
+    clear: both;
+    position: relative;
+  }
+}
+
+.navbar-fixed-top {
+  margin: 0 !important;
+}
+
+header {
+  border-top: 6px solid $light-primary;
+  #logo img {
+    margin: 24px 0;
+    float: left;
+    @media (max-width: $break-mobile) {
+      float: none;
+    }
+    @media (max-width: $break-desktop) {
+      max-width: 230px;
+      margin: 0 auto;
+      padding: 24px 0;
+      display: block;
+    }
+  }
+  #block-superfish-1 {
+    float: right;
+    margin-top: 30px;
+    font-family: $style-font;
+    @media (max-width: $break-mobile) {
+      display: none;
+    }
+    .block__content li {
+      background: none;
+      font-size: 1.2em;
+      a {
+        color: #58585a;
+        text-decoration: none;
+        text-transform: uppercase;
+        border: 0;
+        padding: 0.5em;
+        line-height: 10px;
+        margin: 0 0.5em;
+        @media (max-width: $break-desktop) {
+          margin: 0 0.1em;
+        }
+        &:hover, &.active {
+          @include primary-gradient-block;
+        }
+      }
+      &.active-trail a.menuparent, &.sfHover > a {
+        @include primary-gradient-block;
+      }
+      &.menuparent {
+        & > a:hover:after, &.sfHover > a:after {
+          content: " ";
+          display: block;
+          background: url(../images/dropdown.png);
+          width: 11px;
+          height: 11px;
+          position: absolute;
+          right: -14px;
+          bottom: 0;
+        }
+        &.first > a:hover:after, &.first.sfHover > a:after {
+          display: none !important;
+        }
+      }
+      ul {
+        background: rgba(0,0,0,0.8);
+        margin: 0 0.5em;
+        top: 30px;
+        li a {
+          margin: 0;
+          line-height: 14px;
+          color: white;
+          font-size: 0.65em;
+        }
+      }
+      &.first > ul {
+        display: none !important;
+      }
+    }
+  }
+}
+
+.tabs .active a,
+.tabs li a:hover,
+.menu-block-wrapper ul li.leaf.active a {
+  @include primary-gradient-block;
+}
+
 #block-campus-switch-campus-switch {
   float: right;
   white-space: nowrap;
   vertical-align: middle;
-  @media (max-width: $break-mid) {
+  @media (max-width: $break-mobile) {
     float: none;
     text-align: center;
   }
@@ -21,7 +131,7 @@
     text-transform: uppercase;
     color: $light-grey;
     font-weight: normal;
-    @media (max-width: $break-mid) {
+    @media (max-width: $break-mobile) {
       display: none;
     }
   }
@@ -64,7 +174,7 @@
           margin: -4px -10px;
           margin-right: -10px;
           padding: 6px 10px;
-          @include background-image(linear-gradient($light-primary, $dark-primary));
+          @include primary-gradient;
           border-top: 1px solid $light-primary;
         }
       }
@@ -80,7 +190,7 @@
 .front header#header {
   background: $light-primary;
   margin-bottom: -3px;
-  @media (max-width: $break-mid) {
+  @media (max-width: $break-mobile) {
     background: transparent;
   }
 }
@@ -89,7 +199,7 @@
   display: none;
   text-align: center;
   color: white;
-  @media (max-width: $break-mid) {
+  @media (max-width: $break-mobile) {
     background: $light-primary;
     margin: -20px 0 -50px;
   }
@@ -97,13 +207,13 @@
     font-family: $style-font;
     font-weight: 200;
     margin-top: 20px;
-    @media (max-width: $break-mid) {
+    @media (max-width: $break-mobile) {
       padding-top: 30px;
     }
   }
   div.block__content {
     margin-top: -10px;
-    @media (max-width: $break-mid) {
+    @media (max-width: $break-mobile) {
       padding: 0 20px 30px;
     }
     ul {
@@ -115,13 +225,13 @@
         float: left;
         width: 50%;
         cursor: pointer;
-        @media (max-width: $break-mid) {
+        @media (max-width: $break-mobile) {
           float: none;
           width: 100%;
         }
         img {
           margin-top: -115px;
-          @media (max-width: $break-mid) {
+          @media (max-width: $break-mobile) {
             display: none;
           }
         }

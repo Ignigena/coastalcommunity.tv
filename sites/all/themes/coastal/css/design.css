@@ -1382,3 +1382,16 @@ a.feed-icon {
 .page-node-95 a {
   color: #333;
 }
+
+.view-id-related_audio .views-row {
+  width: 50%;
+  float: left;
+}
+
+.view-id-related_audio .views-row iframe {
+  max-width: 100%;
+}
+
+.view-id-related_audio .views-row.views-row-odd .player {
+  padding-right: 20px;
+}

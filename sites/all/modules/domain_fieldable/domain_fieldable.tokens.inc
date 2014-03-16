@@ -10,6 +10,14 @@
  */
 function domain_fieldable_token_info() {
 
+  $info['types']['domain_fieldable'] = array(
+    'name' => t('Domains Fieldable'),
+    'description' => t('Tokens related to domains fieldable.'),
+    'needs-data' => 'domain',
+  );
+
+  $info['tokens']['domain_fieldable'] = array();
+
   $info['tokens']['domain']['fields'] = array(
     'name' => t('Fields'),
     'description' => t('Fields.'),
@@ -30,9 +38,13 @@ function domain_fieldable_tokens($type, $tokens, array $data = array(), array $o
     $domain = $data['domain'];
     if ($domain_tokens = token_find_with_prefix($tokens, 'fields')) {
       $domain_fieldable = domain_fieldable_load($domain['domain_id']);
-      $replacements += token_generate('domain_fieldable', $domain_tokens, array('domain_fieldable' => $domain_fieldable), $options);
+      $data = array(
+        'entity' => $domain_fieldable,
+        'entity_type' => 'domain_fieldable',
+        'token_type' => 'domain_fieldable'
+      );
+      $replacements += token_generate('entity', $domain_tokens, $data, $options);
     }
   }
-
   return $replacements;
 }

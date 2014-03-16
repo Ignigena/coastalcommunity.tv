@@ -6,9 +6,9 @@ dependencies[] = domain
 
 files[] = includes/domain_fieldable.inc
 
-; Information added by drupal.org packaging script on 2013-09-26
-version = "7.x-1.0-alpha1"
+; Information added by Drupal.org packaging script on 2014-03-07
+version = "7.x-1.0-alpha1+2-dev"
 core = "7.x"
 project = "domain_fieldable"
-datestamp = "1380195237"
+datestamp = "1394210605"
 

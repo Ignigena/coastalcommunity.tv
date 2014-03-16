@@ -107,13 +107,13 @@ function podcaster_block_view($delta = '') {
     $node = arg(1);
     $playlist = array();
 
-    $associated = drupal_http_request('http://api.bethel.io/podcast/' . $_SERVER['BETHEL_PODCASTER'] . '/associated/' . $node);
+    $associated = drupal_http_request('https://my.bethel.io/podcastmedia/related/' . $node);
     if (!isset($associated->error)) {
       $associated = json_decode($associated->data);
   
       foreach ($associated as $media) {
         $playlist[] = array(
-          'filename' => $media->title,
+          'filename' => $media->name,
           'url' => $media->url,
         );
       }

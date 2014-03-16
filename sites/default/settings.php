@@ -8,10 +8,6 @@
     }
   }
 
-  // Set the node ID for Podcaster linkage.
-  // @todo: This should be moved to a setting form once the API is finalized.
-  $_SERVER['BETHEL_PODCASTER'] = 4;
-
   extract(json_decode($_SERVER['PRESSFLOW_SETTINGS'], TRUE));
   require_once DRUPAL_ROOT . '/sites/all/modules/domain/settings.inc';
 

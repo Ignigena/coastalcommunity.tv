@@ -107,7 +107,7 @@ function podcaster_block_view($delta = '') {
     $node = arg(1);
     $playlist = array();
 
-    $associated = drupal_http_request('https://my.bethel.io/podcastmedia/related/' . $node);
+    $associated = drupal_http_request('http://mybethel.baetylus.bethel.io/podcastmedia/related/' . $node);
     if (!isset($associated->error)) {
       $associated = json_decode($associated->data);
   

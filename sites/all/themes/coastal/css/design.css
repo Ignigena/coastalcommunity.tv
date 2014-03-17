@@ -1383,15 +1383,30 @@ a.feed-icon {
   color: #333;
 }
 
-.view-id-related_audio .views-row {
+#block-mediaplayer-media-player-referenced ul {
+  margin: 0;
+}
+
+#block-mediaplayer-media-player-referenced li {
   width: 50%;
   float: left;
+  list-style: none;
+  box-sizing: border-box;
 }
 
-.view-id-related_audio .views-row iframe {
+#block-mediaplayer-media-player-referenced iframe {
   max-width: 100%;
+  margin-top: 20px;
 }
 
-.view-id-related_audio .views-row.views-row-odd .player {
-  padding-right: 20px;
+#block-mediaplayer-media-player-referenced li.even {
+  padding-left: 10px;
+}
+
+#block-mediaplayer-media-player-referenced li.odd {
+  padding-right: 10px;
+}
+
+#qt-event_toolbox-ui-tabs2 {
+  padding-top: 0;
 }

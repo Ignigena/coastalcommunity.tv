@@ -1,0 +1,5 @@
+name = Media Player
+package = Bethel
+description = Media Player with support for external sources.
+core = 7.x
+dependencies[] = bethel

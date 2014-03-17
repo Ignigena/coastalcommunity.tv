@@ -22,7 +22,7 @@ function mediaplayer_block_view($delta = '') {
     $count = 0;
     $media = array();
 
-    $result = db_query('SELECT v.field_video_video_url embed FROM {field_revision_field_related_event} e JOIN {field_revision_field_video} v ON e.entity_id = v.entity_id WHERE e.bundle = :bundle AND e.field_related_event_target_id = :nid', array(':bundle' => 'media', ':nid' => arg(1)));
+    $result = db_query('SELECT v.field_video_video_url embed FROM {field_revision_field_related_event} e LEFT JOIN {field_revision_field_video} v ON e.entity_id = v.entity_id LEFT JOIN {node} n ON e.entity_id = n.nid WHERE e.bundle = :bundle AND e.field_related_event_target_id = :nid ORDER BY n.created DESC', array(':bundle' => 'media', ':nid' => arg(1)));
 
     foreach ($result as $record) {      
       if (strpos($record->embed, 'vimeo.com')) {

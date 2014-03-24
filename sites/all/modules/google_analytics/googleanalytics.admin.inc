@@ -201,6 +201,12 @@ function googleanalytics_admin_settings_form($form_state) {
     '#description' => t('A file extension list separated by the | character that will be tracked as download when clicked. Regular expressions are supported. For example: !extensions', array('!extensions' => GOOGLEANALYTICS_TRACKFILES_EXTENSIONS)),
     '#maxlength' => 255,
   );
+  $form['tracking']['linktracking']['googleanalytics_tracklinkid'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enable enhanced link attribution'),
+    '#default_value' => variable_get('googleanalytics_tracklinkid', 0),
+    '#description' => t('Enhancements: separate click tracking for multiple links on a page with the same destination, better tracking for search buttons, and tracking for javascript links/buttons. To use this you must enable <a href="@url">enhanced link attribution</a> for this site on your Google Analytics account.', array('@url' => url('http://support.google.com/analytics/bin/answer.py', array('query' => array('answer' => '2558867'))))),
+  );
 
   // Message specific configurations.
   $form['tracking']['messagetracking'] = array(
@@ -233,7 +239,7 @@ function googleanalytics_admin_settings_form($form_state) {
   $form['tracking']['search_and_advertising']['googleanalytics_site_search'] = array(
     '#type' => 'checkbox',
     '#title' => t('Track internal search'),
-    '#description' => t('If checked, internal search keywords are tracked. You must configure your Google account to use the internal query parameter <strong>search</strong>. For more information see <a href="@url">Setting Up Site Search for a Profile</a>.', array('@url' => url('http://support.google.com/analytics/bin/answer.py', array('query' => array('answer' => '1012264'))))) . $site_search_dependencies,
+    '#description' => t('If checked, internal search keywords are tracked. You must configure your Google account to use the internal query parameter <strong>search</strong>. For more information see <a href="@url">Setting Up Site Search for a Profile</a>.', array('@url' => url('https://support.google.com/analytics/answer/1012264'))) . $site_search_dependencies,
     '#default_value' => variable_get('googleanalytics_site_search', FALSE),
     '#disabled' => (module_exists('search') ? FALSE : TRUE),
   );
@@ -247,7 +253,7 @@ function googleanalytics_admin_settings_form($form_state) {
   $form['tracking']['search_and_advertising']['googleanalytics_trackdoubleclick'] = array(
     '#type' => 'checkbox',
     '#title' => t('Track DoubleClick data'),
-    '#description' => t('If checked, the alternative Google <a href="@doubleclick">DoubleClick data tracking</a> is used to enable AdWords remarketing features. If you choose this option you will need to <a href="@privacy">update your privacy policy</a>.', array('@doubleclick' => url('http://support.google.com/analytics/bin/answer.py', array('query' => array('answer' => '2444872'))), '@privacy' => url('http://support.google.com/analytics/bin/answer.py', array('query' => array('answer' => '2636405'))))),
+    '#description' => t('If checked, the alternative Google <a href="@doubleclick">DoubleClick data tracking</a> is used to enable AdWords remarketing features. This is required for Remarketing, Demographics and Interests reporting and GDN Impression Reporting features. If you choose this option you will need to <a href="@privacy">update your privacy policy</a>.', array('@doubleclick' => url('http://support.google.com/analytics/bin/answer.py', array('query' => array('answer' => '2444872'))), '@privacy' => url('http://support.google.com/analytics/bin/answer.py', array('query' => array('answer' => '2636405'))))),
     '#default_value' => variable_get('googleanalytics_trackdoubleclick', FALSE),
   ); */
 

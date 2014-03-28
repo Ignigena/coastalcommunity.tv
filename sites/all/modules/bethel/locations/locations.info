@@ -1,0 +1,6 @@
+name = Locations
+package = Bethel
+description = Integrates campus locations with Domain Access configuration.
+core = 7.x
+dependencies[] = bethel
+dependencies[] = domain

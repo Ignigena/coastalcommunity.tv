@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function locations_menu() {
+  // Location specific settings.
+  $items['admin/config/bethel/locations'] = array(
+    'title' => 'Locations',
+    'description' => 'Select the campus location to associate with this domain.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('locations_admin'),
+    'access arguments' => array('administer bethel settings'),
+    'type' => MENU_NORMAL_ITEM,
+   );
+
+  return $items;
+}
+
+function locations_admin() {
+  $bethel_key = variable_get('bethel_key', NULL);
+  $locations_all = array();
+  
+  if ($bethel_key) {
+    $locations = _bethel_api_query('ministry/locations/' . $bethel_key);
+
+    foreach ($locations as $location) {
+      $locations_all[$location->id] = $location->name;
+    }
+  }
+  
+  $form = array();
+  
+  $form['campus_location'] = array(
+    '#type' => 'select',
+    '#title' => t('Campus Location'),
+    '#options' => $locations_all,
+    '#default_value' => variable_get('campus_location', '')
+  );
+
+  return system_settings_form($form);
+}

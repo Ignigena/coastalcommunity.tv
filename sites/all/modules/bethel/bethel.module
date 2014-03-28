@@ -12,8 +12,41 @@ function bethel_menu() {
     'file' => 'system.admin.inc',
     'weight' => -99,
   );
+  
+  $items['admin/config/bethel/connect'] = array(
+    'title' => 'Connect',
+    'description' => 'Connect your site to the Bethel platform.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('bethel_admin'),
+    'access arguments' => array('administer bethel settings'),
+    'type' => MENU_NORMAL_ITEM,
+   );
 
   return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function bethel_permission() {
+  $permissions = array(
+    'administer bethel settings' => array(
+      'title' => t('Administer Bethel settings'),
+    ),
+  );
+  return $permissions;
+}
+
+function bethel_admin() {
+  $form = array();
+  
+  $form['bethel_key'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Bethel Key'),
+    '#default_value' => variable_get('bethel_key', '')
+  );
+
+  return system_settings_form($form);
 }
 
 /**
@@ -39,5 +72,14 @@ function bethel_html_head_alter(&$head_elements) {
   if (isset($head_elements['metatag_generator'])) {
     $head_elements['metatag_generator']['#value'] = $bethel_generator;
     $head_elements['metatag_generator']['#attached']['drupal_add_http_header'][0][1] = $bethel_generator;
+  }
+}
+
+function _bethel_api_query($query) {
+  $api_response = drupal_http_request('http://my.bethel.io/' . $query);
+  if (!isset($api_response->error)) {
+    return json_decode($api_response->data);
+  } else {
+    // @todo: Show warning to site administrators.
   }
 }

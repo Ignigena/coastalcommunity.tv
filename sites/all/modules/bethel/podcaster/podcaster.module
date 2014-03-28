@@ -107,35 +107,32 @@ function podcaster_block_view($delta = '') {
     $node = arg(1);
     $playlist = array();
 
-    $associated = drupal_http_request('http://mybethel.baetylus.bethel.io/podcastmedia/related/' . $node);
-    if (!isset($associated->error)) {
-      $associated = json_decode($associated->data);
-  
-      foreach ($associated as $media) {
-        $playlist[] = array(
-          'filename' => $media->name,
-          'url' => $media->url,
-        );
-      }
-      if (count($playlist) >= 1) {
-        $block['content'] = theme('jplayer', array(
-          'entity_type' => 'node',
-          'entity' => node_load($node),
-          'field_name' => 'podcaster',
-          'items' => $playlist,
-          'settings' => array(
-            'autoplay' => 0,
-            'continuous' => 0,
-            'solution' => 'html, flash',
-            'preload' => 'metadata',
-            'volume' => 80,
-            'muted' => FALSE,
-            'repeat' => 'none',
-            'backgroundColor' => '000000',
-            'mode' => 'playlist',
-          ),
-        ));
-      }
+    $associated = _bethel_api_query('podcastmedia/related/' . $node);
+
+    foreach ($associated as $media) {
+      $playlist[] = array(
+        'filename' => $media->name,
+        'url' => $media->url,
+      );
+    }
+    if (count($playlist) >= 1) {
+      $block['content'] = theme('jplayer', array(
+        'entity_type' => 'node',
+        'entity' => node_load($node),
+        'field_name' => 'podcaster',
+        'items' => $playlist,
+        'settings' => array(
+          'autoplay' => 0,
+          'continuous' => 0,
+          'solution' => 'html, flash',
+          'preload' => 'metadata',
+          'volume' => 80,
+          'muted' => FALSE,
+          'repeat' => 'none',
+          'backgroundColor' => '000000',
+          'mode' => 'playlist',
+        ),
+      ));
     }
   }
 

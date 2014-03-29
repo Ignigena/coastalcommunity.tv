@@ -73,7 +73,7 @@ function theme_campus_switch_block($variables) {
   $_domain = domain_get_domain();
   $domains = $variables['domains'];
   
-  $domain_fields = domain_fieldable_load($_domain['domain_id']);
+  $location = _bethel_api_query('location/show/' .domain_conf_variable_get($_domain['domain_id'], 'campus_location'));
   
   $output = '';
   $items = array();
@@ -102,10 +102,7 @@ function theme_campus_switch_block($variables) {
     }
   }
   $output .= theme('item_list', array('items' => $items));
-  $output .= $domain_fields->field_service_times['und'][0]['safe_value'];
-  if ($msg) {
-    $output .= t('<em>* Inactive domain.</em>');
-  }
+  $output .= '<p>' . preg_replace('/(\d+:\d+\w\w)/i', '<strong>$1</strong>', $location->times) . '</p>';
   return $output;
 }
 
@@ -119,11 +116,11 @@ function theme_first_visit_campus_select_block($variables) {
   $active = NULL;
   foreach ($domains as $domain) {
     if ($domain['valid']) {
-      $domain_fields = domain_fieldable_load($domain['domain_id']);
-      $lat_lng = $domain_fields->field_location['und'][0]['lat'] . ',' . $domain_fields->field_location['und'][0]['lng'];
+      $location = _bethel_api_query('location/show/' .domain_conf_variable_get($domain['domain_id'], 'campus_location'));
+      $lat_lng = $location->loc[1] . ',' . $location->loc[0];
       $items[$i]['data'] = '<img src="http://maps.googleapis.com/maps/api/staticmap?center=' . $lat_lng . '&zoom=13&size=150x200&maptype=roadmap&markers=color:red%7C' . $lat_lng . '&sensor=false" />';
       $items[$i]['data'] .= '<a>' . $domain['sitename'] . '</a>';
-      $items[$i]['data'] .= $domain_fields->field_service_times['und'][0]['safe_value'];
+      $items[$i]['data'] .= '<p>' . preg_replace('/(\d+:\d+\w\w)/i', '<strong>$1</strong>', $location->times) . '</p>';
       $items[$i]['location'] = $domain['path'];
       $i++;
     }

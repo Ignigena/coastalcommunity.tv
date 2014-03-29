@@ -22,7 +22,7 @@ function locations_admin() {
   $locations_all = array();
   
   if ($bethel_key) {
-    $locations = _bethel_api_query('ministry/locations/' . $bethel_key);
+    $locations = _bethel_api_query('location/ministry/' . $bethel_key);
 
     foreach ($locations as $location) {
       $locations_all[$location->id] = $location->name;
@@ -39,4 +39,57 @@ function locations_admin() {
   );
 
   return system_settings_form($form);
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function locations_block_info() {
+  $blocks['campus-locations'] = array(
+    'info' => t('Campus Location'), 
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  return $blocks;
+}
+
+/*
+ * Implementation of hook_theme().
+ */
+function locations_theme() {
+  return array(
+    'campus_block' => array(
+      'arguments' => array(),
+      'template' => 'bethel-campus-block',
+      'variables' => array(
+        'map' => NULL,
+        'location' => NULL
+      )
+    )
+  );
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function locations_block_view($delta = '') {
+  $location = _bethel_api_query('location/show/' . variable_get('campus_location'));
+
+  $map = leaflet_map_get_info('OSM Mapnik');
+  $map['center'] = array('lat' => $location->loc[1], 'lon' => $location->loc[0]);
+  $map['settings']['maxZoom'] = 15;
+  $map['settings']['scrollWheelZoom'] = false;
+
+  $features = array(
+    array(
+      'type' => 'point',
+      'lon' => $location->loc[0],
+      'lat' => $location->loc[1],
+      'leaflet_id' => $location->id,
+    ),
+  );
+
+  $block['subject'] = NULL;
+  $block['content'] = theme('campus_block', array('map' => leaflet_render_map($map, $features, '300px'), 'location' => $location));
+  return $block;
 }

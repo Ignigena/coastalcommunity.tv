@@ -1,11 +1,11 @@
 (function ($) {
   $(document).ready(function($) {
-    $('#block-views-location-block a.get-directions').click(function() {
-      $('#block-views-location-block .leaflet-container').slideToggle(400, function() {
+    $('#block-locations-campus-locations .get-directions a').click(function(e) {
+      $('#block-locations-campus-locations .leaflet-container').slideToggle(400, function() {
         _leaflet_resize3();
       });
-      $('#block-views-location-block .views-field-field-address').fadeToggle(400);
-      return false;
+      $('#block-locations-campus-locations .location-address').fadeToggle(400);
+      e.preventDefault();
     });
     
     if ($('article.node--page--full .field--name-field-video iframe').length) {

@@ -169,34 +169,6 @@ function locations_field_widget_form(&$form, &$form_state, $field, $instance, $l
 }
 
 /**
- * Validate the individual fields and then convert to RGB string.
- */
-function field_example_3text_validate($element, &$form_state) {
-  // @todo: Isn't there a better way to find out which element?
-  $delta = $element['#delta'];
-  $field = $form_state['field'][$element['#field_name']][$element['#language']]['field'];
-  $field_name = $field['field_name'];
-  if (isset($form_state['values'][$field_name][$element['#language']][$delta]['rgb'])) {
-    $values = $form_state['values'][$field_name][$element['#language']][$delta]['rgb'];
-    foreach (array('r', 'g', 'b') as $colorfield) {
-      $colorfield_value = hexdec($values[$colorfield]);
-      // If they left any empty, we'll set the value empty and quit.
-      if (strlen($values[$colorfield]) == 0) {
-        form_set_value($element, '', $form_state);
-        return;
-      }
-      // If they gave us anything that's not hex, reject it.
-      if ((strlen($values[$colorfield]) != 2) || $colorfield_value < 0 || $colorfield_value > 255) {
-        form_error($element[$colorfield], t("Saturation value must be a 2-digit hexadecimal value between 00 and ff."));
-      }
-    }
-
-    $value = sprintf('#%02s%02s%02s', $values['r'], $values['g'], $values['b']);
-    form_set_value($element, $value, $form_state);
-  }
-}
-
-/**
  * Implements hook_block_info().
  */
 function locations_block_info() {

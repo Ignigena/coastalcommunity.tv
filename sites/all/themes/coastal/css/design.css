@@ -610,7 +610,7 @@ div.jp-audio div.jp-type-playlist a.jp-stop {
   height: 231px;
 }
 
-#qt-event_toolbox-ui-tabs3 #block-views-locations-block {
+#qt-event_toolbox-ui-tabs3 #block-locations-event-locations {
   position: absolute;
   left: 0;
   top: 0;
@@ -1311,6 +1311,7 @@ a.feed-icon {
 
 .view-location .views-field-field-address,
 .view-locations .view-footer,
+#block-locations-event-locations .location-address,
 #block-locations-campus-locations .location-address {
   position: absolute;
   bottom: 65px;
@@ -1334,6 +1335,7 @@ a.feed-icon {
 @media (max-width: 568px) {
   .view-location .views-field-field-address,
   .view-locations .view-footer,
+  #block-locations-event-locations .location-address,
   #block-locations-campus-locations .location-address {
     font-size: 15px;
     line-height: 20px;
@@ -1341,7 +1343,7 @@ a.feed-icon {
   }
 }
 
-.view-locations .view-footer {
+#block-locations-event-locations .location-address {
   bottom: 0;
   line-height: 50px;
   display: block;
@@ -1349,6 +1351,7 @@ a.feed-icon {
 
 .view-location .views-field-field-address a,
 .view-locations .view-footer a,
+#block-locations-event-locations .location-address a,
 #block-locations-campus-locations .location-address a {
   color: whitesmoke;
 }

@@ -79,13 +79,7 @@ function locations_field_formatter_view($entity_type, $entity, $field, $instance
 
   foreach ($items as $delta => $item) {
   
-    if ($item['bethel_id']) {
-      $location_id = ($item['bethel_id'] == 'AUTO') ? variable_get('campus_location') : $item['bethel_id'];
-      $location = _bethel_api_query('location/show/' . $location_id);     
-      $item['address'] = $location->address;
-      $item['lat'] = $location->loc[1];
-      $item['lon'] = $location->loc[0];
-    }
+    $item = _bethel_locations_process($item);
   
     switch ($display['type']) {
   
@@ -176,6 +170,10 @@ function locations_block_info() {
     'info' => t('Campus Location'), 
     'cache' => DRUPAL_NO_CACHE,
   );
+  $blocks['event-locations'] = array(
+    'info' => t('Event Location'), 
+    'cache' => DRUPAL_NO_CACHE,
+  );
 
   return $blocks;
 }
@@ -200,25 +198,67 @@ function locations_theme() {
  * Implements hook_block_view().
  */
 function locations_block_view($delta = '') {
-  $location = _bethel_api_query('location/show/' . variable_get('campus_location'));
-
   $map = leaflet_map_get_info('OSM Mapnik');
-  $map['center'] = array('lat' => $location->loc[1], 'lon' => $location->loc[0]);
   $map['settings']['maxZoom'] = 15;
   $map['settings']['scrollWheelZoom'] = false;
-
-  $features = array(
-    array(
-      'type' => 'point',
-      'lon' => $location->loc[0],
-      'lat' => $location->loc[1],
-      'leaflet_id' => $location->id,
-    ),
-  );
-
   $block['subject'] = NULL;
-  $block['content'] = theme('campus_block', array('map' => leaflet_render_map($map, $features, '300px'), 'location' => $location));
+
+  switch ($delta) {
+
+    case 'event-locations':
+      if (arg(1)) {
+        $result = db_query('SELECT l.field_where_bethel_id bethel_id, l.field_where_address address, l.field_where_lat lat, l.field_where_lon lon FROM {field_data_field_where} l WHERE l.entity_id = :nid', array(':nid' => arg(1)));
+        foreach ($result as $record) {
+          $location = _bethel_locations_process(array(
+            'bethel_id' => $record->bethel_id,
+            'address' => $record->address,
+            'lat' => $record->lat,
+            'lon' => $record->lon
+          ));
+          $map['center'] = array('lat' => $location['lat'], 'lon' => $location['lon']);
+          $features = array(
+            array(
+              'type' => 'point',
+              'lon' => $location['lon'],
+              'lat' => $location['lat'],
+            ),
+          );
+        }
+        $block['content'] = leaflet_render_map($map, $features, '300px');
+        $block['content'] .= '<div class="location-address"><a href="http://maps.google.com/?q=' . $location['address'] . '" target="_blank">' . implode(', ', explode(', ', $location['address'], -2)) . '</a></div>';
+      }
+    break;
+
+    case 'campus-locations':
+      $location = _bethel_api_query('location/show/' . variable_get('campus_location'));
+
+      $map['center'] = array('lat' => $location->loc[1], 'lon' => $location->loc[0]);
+      $features = array(
+        array(
+          'type' => 'point',
+          'lon' => $location->loc[0],
+          'lat' => $location->loc[1],
+          'leaflet_id' => $location->id,
+        ),
+      );
+      $block['content'] = theme('campus_block', array('map' => leaflet_render_map($map, $features, '300px'), 'location' => $location));
+    break;
+
+  }
+  
   return $block;
+}
+
+function _bethel_locations_process($item) {
+  if ($item['bethel_id']) {
+    $location_id = ($item['bethel_id'] == 'AUTO') ? variable_get('campus_location') : $item['bethel_id'];
+    $location = _bethel_api_query('location/show/' . $location_id);     
+    $item['address'] = $location->address;
+    $item['lat'] = $location->loc[1];
+    $item['lon'] = $location->loc[0];
+  }
+  
+  return $item;
 }
 
 function _bethel_locations_all($extras = array()) {

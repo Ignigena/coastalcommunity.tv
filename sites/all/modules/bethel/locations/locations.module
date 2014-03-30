@@ -224,8 +224,10 @@ function locations_block_view($delta = '') {
             ),
           );
         }
-        $block['content'] = leaflet_render_map($map, $features, '300px');
-        $block['content'] .= '<div class="location-address"><a href="http://maps.google.com/?q=' . $location['address'] . '" target="_blank">' . implode(', ', explode(', ', $location['address'], -2)) . '</a></div>';
+        if (!empty($features)) {
+          $block['content'] = leaflet_render_map($map, $features, '300px');
+          $block['content'] .= '<div class="location-address"><a href="http://maps.google.com/?q=' . $location['address'] . '" target="_blank">' . implode(', ', explode(', ', $location['address'], -2)) . '</a></div>';
+        }
       }
     break;
 

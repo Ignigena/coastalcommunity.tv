@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * Implements hook_field_schema().
+ */
+function locations_field_schema($field) {
+  $columns = array(
+    'bethel_id' => array(
+        'description' => 'Stores the Bethel location ID.',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => '',
+    ),
+    'lat' => array(
+      'description' => 'Stores the latitude value.',
+      'type' => 'float',
+      'size' => 'big',
+      'not null' => TRUE,
+      'default' => 0,
+    ),
+    'lon' => array(
+      'description' => 'Stores the longitude value.',
+      'type' => 'float',
+      'size' => 'big',
+      'not null' => TRUE,
+      'default' => 0,
+    ),
+    'address' => array(
+      'description' => 'Stores the location address.',
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => TRUE,
+      'default' => '',
+    ),
+  );
+  $indexes = array(
+    'lat' => array('lat'),
+    'lon' => array('lon'),
+  );
+  return array(
+    'columns' => $columns,
+    'indexes' => $indexes,
+  );
+}

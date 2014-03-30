@@ -1,0 +1,8 @@
+.field-type-bethel-locations .form-type-textfield {
+  float: left;
+}
+
+.field-type-bethel-locations select.form-select {
+  margin-top: 22px;
+  margin-left: 5px;
+}

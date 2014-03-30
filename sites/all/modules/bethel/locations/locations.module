@@ -18,27 +18,182 @@ function locations_menu() {
 }
 
 function locations_admin() {
-  $bethel_key = variable_get('bethel_key', NULL);
-  $locations_all = array();
-  
-  if ($bethel_key) {
-    $locations = _bethel_api_query('location/ministry/' . $bethel_key);
-
-    foreach ($locations as $location) {
-      $locations_all[$location->id] = $location->name;
-    }
-  }
-  
   $form = array();
   
   $form['campus_location'] = array(
     '#type' => 'select',
     '#title' => t('Campus Location'),
-    '#options' => $locations_all,
+    '#options' => _bethel_locations_all(),
     '#default_value' => variable_get('campus_location', '')
   );
 
   return system_settings_form($form);
+}
+
+/**
+ * Implements hook_field_info().
+ */
+function locations_field_info() {
+  return array(
+    'bethel_locations' => array(
+      'label' => t('Location'),
+      'description' => t('Location input with Bethel integration.'),
+      'default_widget' => 'bethel_location_widget',
+      'default_formatter' => 'bethel_location_text',
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_is_empty().
+ */
+function locations_field_is_empty($item, $field) {
+  return empty($item['address']) && empty($item['bethel_id']);
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function locations_field_formatter_info() {
+  return array(
+    'bethel_location_text' => array(
+      'label' => t('Simple text-based formatter'),
+      'field types' => array('bethel_locations'),
+    ),
+    'bethel_location_latitude' => array(
+      'label' => t('Latitude text-based formatter'),
+      'field types' => array('bethel_locations'),
+    ),
+    'bethel_location_longitude' => array(
+      'label' => t('Longitude text-based formatter'),
+      'field types' => array('bethel_locations'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function locations_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+
+  foreach ($items as $delta => $item) {
+  
+    if ($item['bethel_id']) {
+      $location_id = ($item['bethel_id'] == 'AUTO') ? variable_get('campus_location') : $item['bethel_id'];
+      $location = _bethel_api_query('location/show/' . $location_id);     
+      $item['address'] = $location->address;
+      $item['lat'] = $location->loc[1];
+      $item['lon'] = $location->loc[0];
+    }
+  
+    switch ($display['type']) {
+  
+      case 'bethel_location_text':
+        $element[$delta]['#markup'] = '<p>' . $item['address'] . '</p>';
+        break;
+      case 'bethel_location_latitude':
+        $element[$delta]['#markup'] = $item['lat'];
+        break;
+      case 'bethel_location_longitude':
+        $element[$delta]['#markup'] = $item['lon'];
+        break;
+    }
+  
+  }
+  return $element;
+}
+
+/**
+ * Implements hook_field_widget_info().
+ */
+function locations_field_widget_info() {
+  return array(
+    'bethel_location_widget' => array(
+      'label' => t('Bethel Widget'),
+      'field types' => array('bethel_locations'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_widget_form().
+ */
+function locations_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
+  $element += array(
+    '#delta' => $delta,
+  );
+
+  switch ($instance['widget']['type']) {
+
+    case 'bethel_location_widget':
+      $element['address'] = array(
+        '#title' => $element['#title'],
+        '#type' => 'textfield',
+        '#default_value' => (isset($items[$delta]['address']) && !$items[$delta]['bethel_id']) ? $items[$delta]['address'] : '',
+        '#attributes' => array('placeholder' => 'Enter an address or choose a location to the right.', 'id' => array('location-autocomplete')),
+      );
+      $element['bethel_id'] = array(
+        '#type' => 'select',
+        '#options' => array_merge(_bethel_locations_all(array('AUTO' => 'Automatic'))),
+        '#default_value' => isset($items[$delta]['bethel_id']) ? $items[$delta]['bethel_id'] : '',
+      );
+      $element['lat'] = array(
+        '#type' => 'hidden',
+        '#default_value' => isset($items[$delta]['lat']) ? $items[$delta]['lat'] : '0',
+        '#attributes' => array('class' => array('field-lat')),
+      );
+      $element['lon'] = array(
+        '#type' => 'hidden',
+        '#default_value' => isset($items[$delta]['lon']) ? $items[$delta]['lon'] : '0',
+        '#attributes' => array('class' => array('field-lon')),
+      );
+      break;
+
+  }
+  
+  $element['#attached']['css'][] = drupal_get_path('module', 'locations') . '/locations.field.css';
+  $element['#attached']['js'] = array(
+    array(
+      'data' => '//maps.googleapis.com/maps/api/js?libraries=places&sensor=false',
+      'type' => 'external',
+    ),
+    array(
+      'data' => drupal_get_path('module', 'locations') . '/locations.field.js',
+      'type' => 'file',
+      'scope' => 'footer',
+    ),
+  );
+
+  return $element;
+}
+
+/**
+ * Validate the individual fields and then convert to RGB string.
+ */
+function field_example_3text_validate($element, &$form_state) {
+  // @todo: Isn't there a better way to find out which element?
+  $delta = $element['#delta'];
+  $field = $form_state['field'][$element['#field_name']][$element['#language']]['field'];
+  $field_name = $field['field_name'];
+  if (isset($form_state['values'][$field_name][$element['#language']][$delta]['rgb'])) {
+    $values = $form_state['values'][$field_name][$element['#language']][$delta]['rgb'];
+    foreach (array('r', 'g', 'b') as $colorfield) {
+      $colorfield_value = hexdec($values[$colorfield]);
+      // If they left any empty, we'll set the value empty and quit.
+      if (strlen($values[$colorfield]) == 0) {
+        form_set_value($element, '', $form_state);
+        return;
+      }
+      // If they gave us anything that's not hex, reject it.
+      if ((strlen($values[$colorfield]) != 2) || $colorfield_value < 0 || $colorfield_value > 255) {
+        form_error($element[$colorfield], t("Saturation value must be a 2-digit hexadecimal value between 00 and ff."));
+      }
+    }
+
+    $value = sprintf('#%02s%02s%02s', $values['r'], $values['g'], $values['b']);
+    form_set_value($element, $value, $form_state);
+  }
 }
 
 /**
@@ -92,4 +247,19 @@ function locations_block_view($delta = '') {
   $block['subject'] = NULL;
   $block['content'] = theme('campus_block', array('map' => leaflet_render_map($map, $features, '300px'), 'location' => $location));
   return $block;
+}
+
+function _bethel_locations_all($extras = array()) {
+  $bethel_key = variable_get('bethel_key', NULL);
+  $locations_all = array_merge(array(''), $extras);
+  
+  if ($bethel_key) {
+    $locations = _bethel_api_query('location/ministry/' . $bethel_key);
+
+    foreach ($locations as $location) {
+      $locations_all[$location->id] = $location->name;
+    }
+  }
+  
+  return $locations_all;
 }

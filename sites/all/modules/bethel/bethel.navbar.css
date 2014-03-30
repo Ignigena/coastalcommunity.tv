@@ -1,0 +1,18 @@
+#navbar-administration .navbar-bar .navbar-tab:last-child {
+  float: right;
+}
+
+#navbar-administration .navbar-bar a.navbar-bethel {
+  opacity: 0.7;
+  background: url('https://my.bethel.io/images/logo.png') 0 10px no-repeat;
+  background-size: 100px;
+  width: 110px;
+  overflow: hidden;
+  text-indent: -9999px;
+  -webkit-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+}
+
+#navbar-administration .navbar-bar a.navbar-bethel:hover {
+  opacity: 1.0;
+}

@@ -60,6 +60,36 @@ function bethel_custom_theme() {
 }
 
 /**
+ * Implements hook_navbar().
+ */
+function bethel_navbar() {
+  $items = array();
+
+  // The 'Home' tab is a simple link, which is wrapped in markup associated
+  // with a visual tab styling.
+  $items['bethel'] = array(
+    '#type' => 'navbar_item',
+    'tab' => array(
+      '#type' => 'link',
+      '#title' => t('Bethel'),
+      '#href' => 'https://my.bethel.io/',
+      '#options' => array(
+        'attributes' => array(
+          'title' => t('Bethel dashboard'),
+          'class' => array('navbar-bethel'),
+        ),
+      ),
+      '#attached' => array(
+        'css' => array(drupal_get_path('module', 'bethel') . '/bethel.navbar.css'),
+      ),
+    ),
+    '#weight' => 101,
+  );
+  
+  return $items;
+}
+
+/**
  * Implements hook_html_head_alter().
  */
 function bethel_html_head_alter(&$head_elements) {

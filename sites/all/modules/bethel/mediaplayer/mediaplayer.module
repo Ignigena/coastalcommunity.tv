@@ -35,12 +35,14 @@ function mediaplayer_block_view($delta = '') {
       }
     }
 
-    $block['content'] = theme_item_list(array(
-      'items' => $media,
-      'title' => "",
-      'type' => "ul",
-      'attributes' => array()
-    ));
+    if (!empty($media)) {
+      $block['content'] = theme_item_list(array(
+        'items' => $media,
+        'title' => "",
+        'type' => "ul",
+        'attributes' => array()
+      ));
+    }
   }
 
   return $block;

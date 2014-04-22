@@ -252,8 +252,8 @@ function googleanalytics_page_alter(&$page) {
     }
     $script .= ',"ga");';
 
-    // Create a tracker.
-    $script .= 'ga("create", ' . drupal_json_encode($id) . ');';
+    $codesnippet_create = variable_get('googleanalytics_codesnippet_create', array()) ?: 'auto';
+    $script .= 'ga("create", ' . drupal_json_encode($id) . ', ' . drupal_json_encode($codesnippet_create) .');';
 
     // Add enhanced link attribution after 'create', but before 'pageview' send.
     // @see https://support.google.com/analytics/answer/2558867
@@ -442,16 +442,16 @@ function googleanalytics_search_get_keys() {
  *
  * @param $location
  *   The full URL to the external javascript file.
- * @param $sync_cached_file
- *   Synchronize tracking code and update if remote file have changed.
+ * @param $synchronize
+ *   Synchronize to local cache if remote file has changed.
  * @return mixed
  *   The path to the local javascript file on success, boolean FALSE on failure.
  */
-function _googleanalytics_cache($location, $sync_cached_file = FALSE) {
+function _googleanalytics_cache($location, $synchronize = FALSE) {
   $path = 'public://googleanalytics';
   $file_destination = $path . '/' . basename($location);
 
-  if (!file_exists($file_destination) || $sync_cached_file) {
+  if (!file_exists($file_destination) || $synchronize) {
     // Download the latest tracking code.
     $result = drupal_http_request($location);
 

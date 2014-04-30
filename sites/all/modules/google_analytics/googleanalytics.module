@@ -95,11 +95,11 @@ function googleanalytics_page_alter(&$page) {
     '404 Not Found',
   );
 
-  // 1. Check if the GA account number has a value.
+  // 1. Check if the GA account number has a valid value.
   // 2. Track page views based on visibility value.
   // 3. Check if we should track the currently active user's role.
   // 4. Ignore pages visibility filter for 404 or 403 status codes.
-  if (!empty($id) && (_googleanalytics_visibility_pages() || in_array($status, $trackable_status_codes)) && _googleanalytics_visibility_user($user)) {
+  if (preg_match('/^UA-\d+-\d+$/', $id) && (_googleanalytics_visibility_pages() || in_array($status, $trackable_status_codes)) && _googleanalytics_visibility_user($user)) {
 
     // We allow different scopes. Default to 'header' but allow user to override if they really need to.
     // @todo: footer may no longer suppored
@@ -181,6 +181,7 @@ function googleanalytics_page_alter(&$page) {
     }
 
     // Add any custom code snippets if specified.
+    $codesnippet_create = variable_get('googleanalytics_codesnippet_create', array());
     $codesnippet_before = variable_get('googleanalytics_codesnippet_before', '');
     $codesnippet_after = variable_get('googleanalytics_codesnippet_after', '');
 
@@ -234,7 +235,7 @@ function googleanalytics_page_alter(&$page) {
     $script .= '})(window,document,"script",';
 
     // Which version of the tracking library should be used?
-    $library_tracker_url = '//www.google-analytics.com/analytics.js';
+    $library_tracker_url = '//www.google-analytics.com/' . (variable_get('googleanalytics_debug', 0) ? 'analytics_debug.js' : 'analytics.js');
     $library_cache_url = 'http:' . $library_tracker_url;
 
     // Should a local cached copy of analytics.js be used?
@@ -252,8 +253,21 @@ function googleanalytics_page_alter(&$page) {
     }
     $script .= ',"ga");';
 
-    $codesnippet_create = variable_get('googleanalytics_codesnippet_create', array()) ?: 'auto';
-    $script .= 'ga("create", ' . drupal_json_encode($id) . ', ' . drupal_json_encode($codesnippet_create) .');';
+    // Build the create only fields list.
+    $create_only_fields = array();
+    $create_only_fields = array_merge($create_only_fields, $codesnippet_create);
+
+    // Track logged in users accross all devices.
+    if (variable_get('googleanalytics_trackuserid', 0) && user_is_logged_in()) {
+      // The USER_ID value should be a unique, persistent, and non-personally
+      // identifiable string identifier that represents a user or signed-in
+      // account across devices.
+      $create_only_fields['userId'] = drupal_base64_encode(drupal_get_hash_salt() . $user->uid);
+    }
+
+    // Create a tracker.
+    $create_only_fields = empty($create_only_fields) ? 'auto' : $create_only_fields;
+    $script .= 'ga("create", ' . drupal_json_encode($id) . ', ' . drupal_json_encode($create_only_fields) .');';
 
     // Add enhanced link attribution after 'create', but before 'pageview' send.
     // @see https://support.google.com/analytics/answer/2558867
@@ -271,7 +285,7 @@ function googleanalytics_page_alter(&$page) {
     $googleanalytics_adsense_script = 'window.google_analytics_uacct = ' . drupal_json_encode($id) . ';';
 
     if (variable_get('googleanalytics_tracker_anonymizeip', 1)) {
-      $script .= 'ga("set", "anonymizeIp", 1);';
+      $script .= 'ga("set", "anonymizeIp", true);';
     }
 
     // Domain tracking type.
@@ -291,9 +305,9 @@ function googleanalytics_page_alter(&$page) {
       $googleanalytics_adsense_script .= 'window.google_analytics_domain_name = "none";';
     }
 
-    if (!empty($custom_var)) {
+    /*if (!empty($custom_var)) {
       $script .= $custom_var;
-    }
+    }*/
     if (!empty($codesnippet_before)) {
       $script .= $codesnippet_before;
     }
@@ -312,7 +326,7 @@ function googleanalytics_page_alter(&$page) {
     // @TODO: not available yet, comming soon per Google.
     //if (variable_get('googleanalytics_trackadsense', FALSE)) {
       // Custom tracking. Prepend before all other JavaScript.
-      // @TODO: http://support.google.com/adsense/bin/answer.py?answer=98142
+      // @TODO: https://support.google.com/adsense/answer/98142
       // sounds like it could be appended to $script.
       //drupal_add_js($googleanalytics_adsense_script, array('type' => 'inline', 'group' => JS_LIBRARY-1));
     //}

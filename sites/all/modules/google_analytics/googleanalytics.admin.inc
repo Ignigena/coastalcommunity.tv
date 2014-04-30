@@ -80,7 +80,7 @@ function googleanalytics_admin_settings_form($form_state) {
     '#title' => t('List of top-level domains'),
     '#type' => 'textarea',
     '#default_value' => variable_get('googleanalytics_cross_domains', ''),
-    '#description' => t('If you selected "Multiple top-level domains" above, enter all related top-level domains. Add one domain per line. By default, the data in your reports only includes the path and name of the page, and not the domain name. For more information see section <em>Show separate domain names</em> in <a href="@url">Tracking Multiple Domains</a>.', array('@url' => url('http://support.google.com/analytics/bin/answer.py', array('query' => array('answer' => '1034342'))))),
+    '#description' => t('If you selected "Multiple top-level domains" above, enter all related top-level domains. Add one domain per line. By default, the data in your reports only includes the path and name of the page, and not the domain name. For more information see section <em>Show separate domain names</em> in <a href="@url">Tracking Multiple Domains</a>.', array('@url' => 'https://support.google.com/analytics/answer/1034342')),
   );
 
   // Page specific visibility configurations.
@@ -172,6 +172,12 @@ function googleanalytics_admin_settings_form($form_state) {
     ),
     '#default_value' => variable_get('googleanalytics_custom', 0),
   );
+  $form['tracking']['user_vis_settings']['googleanalytics_trackuserid'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Track User ID'),
+    '#default_value' => variable_get('googleanalytics_trackuserid', 0),
+    '#description' => t('User ID enables the analysis of groups of sessions, across devices, using a unique, persistent, and non-personally identifiable ID string representing a user. <a href="@url">Learn more about the benfits of using User ID</a>.', array('@url' => 'https://support.google.com/analytics/answer/3123663')),
+  );
 
   // Link specific configurations.
   $form['tracking']['linktracking'] = array(
@@ -239,7 +245,7 @@ function googleanalytics_admin_settings_form($form_state) {
   $form['tracking']['search_and_advertising']['googleanalytics_site_search'] = array(
     '#type' => 'checkbox',
     '#title' => t('Track internal search'),
-    '#description' => t('If checked, internal search keywords are tracked. You must configure your Google account to use the internal query parameter <strong>search</strong>. For more information see <a href="@url">Setting Up Site Search for a Profile</a>.', array('@url' => url('https://support.google.com/analytics/answer/1012264'))) . $site_search_dependencies,
+    '#description' => t('If checked, internal search keywords are tracked. You must configure your Google account to use the internal query parameter <strong>search</strong>. For more information see <a href="@url">Setting Up Site Search for a Profile</a>.', array('@url' => 'https://support.google.com/analytics/answer/1012264')) . $site_search_dependencies,
     '#default_value' => variable_get('googleanalytics_site_search', FALSE),
     '#disabled' => (module_exists('search') ? FALSE : TRUE),
   );
@@ -253,7 +259,7 @@ function googleanalytics_admin_settings_form($form_state) {
   $form['tracking']['search_and_advertising']['googleanalytics_trackdoubleclick'] = array(
     '#type' => 'checkbox',
     '#title' => t('Track display features'),
-    '#description' => t('The display features plugin can be used to enable Display Advertising Features in Google Analytics, such as Remarketing, Demographics and Interest Reporting, and more. <a href="@displayfeatures">Learn more about Display Advertising Features in Google Analytics</a>. If you choose this option you will need to <a href="@privacy">update your privacy policy</a>.', array('@displayfeatures' => 'https://support.google.com/analytics/answer/3450482', '@privacy' => url('https://support.google.com/analytics/answer/2700409'))),
+    '#description' => t('The display features plugin can be used to enable Display Advertising Features in Google Analytics, such as Remarketing, Demographics and Interest Reporting, and more. <a href="@displayfeatures">Learn more about Display Advertising Features in Google Analytics</a>. If you choose this option you will need to <a href="@privacy">update your privacy policy</a>.', array('@displayfeatures' => 'https://support.google.com/analytics/answer/3450482', '@privacy' => 'https://support.google.com/analytics/answer/2700409')),
     '#default_value' => variable_get('googleanalytics_trackdoubleclick', FALSE),
   );
 
@@ -381,12 +387,12 @@ function googleanalytics_admin_settings_form($form_state) {
     '#title' => t('Custom JavaScript code'),
     '#collapsible' => TRUE,
     '#collapsed' => TRUE,
-    '#description' => t('You can add custom Google Analytics <a href="@snippets">code snippets</a> here. These will be added every time tracking is in effect. Before you add your custom code, you should read the <a href="@ga_concepts_overview">Google Analytics Tracking Code - Functional Overview</a> and the <a href="@ga_js_api">Google Analytics Tracking API</a> documentation. <strong>Do not include the &lt;script&gt; tags</strong>, and always end your code with a semicolon (;).', array('@snippets' => 'http://drupal.org/node/248699', '@ga_concepts_overview' => 'https://developers.google.com/analytics/resources/concepts/gaConceptsTrackingOverview', '@ga_js_api' => 'https://developers.google.com/analytics/devguides/collection/gajs/methods/')),
+    '#description' => t('You can add custom Google Analytics <a href="@snippets">code snippets</a> here. These will be added every time tracking is in effect. Before you add your custom code, you should read the <a href="@ga_concepts_overview">Google Analytics Tracking Code - Functional Overview</a> and the <a href="@ga_js_api">Google Analytics Tracking API</a> documentation. <strong>Do not include the &lt;script&gt; tags</strong>, and always end your code with a semicolon (;).', array('@snippets' => 'http://drupal.org/node/248699', '@ga_concepts_overview' => 'https://developers.google.com/analytics/resources/concepts/gaConceptsTrackingOverview', '@ga_js_api' => 'https://developers.google.com/analytics/devguides/collection/analyticsjs/method-reference')),
   );
   $form['advanced']['codesnippet']['googleanalytics_codesnippet_create'] = array(
     '#type' => 'textarea',
     '#title' => t('Create only fields'),
-    '#default_value' => _googleanalytics_get_key_values_string(variable_get('googleanalytics_codesnippet_create', array())),
+    '#default_value' => _googleanalytics_get_name_value_string(variable_get('googleanalytics_codesnippet_create', array())),
     '#rows' => 5,
     '#description' => t("Enter one value per line, in the format name|value. Settings in this textarea will be added to <code>ga('create', 'UA-XXXX-Y', { 'name': 'value' });</code>. For more information, read <a href='@url'>create only fields</a> documentation in the Analytics.js field reference.", array('@url' => 'https://developers.google.com/analytics/devguides/collection/analyticsjs/field-reference#create')),
     '#element_validate' => array('googleanalytics_validate_create_field_values'),
@@ -416,6 +422,12 @@ function googleanalytics_admin_settings_form($form_state) {
     ),
     '#default_value' => variable_get('googleanalytics_js_scope', 'header'),
     '#disabled' => (variable_get('googleanalytics_domain_mode', 0) == 2) ? TRUE : FALSE,
+  );
+  $form['advanced']['googleanalytics_debug'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Enable debugging'),
+    '#description' => t('If checked, the Google Universal Analytics debugging script will be loaded. You should not enable your production site to use this version of the JavaScript. The analytics_debug.js script is larger than the analytics.js tracking code and it is not typically cached. Using it in your production site will slow down your site for all of your users. Again, this is only for your own testing purposes. Debug messages are printed to the <code>window.console</code> object.'),
+    '#default_value' => variable_get('googleanalytics_debug', 0),
   );
 
   return system_settings_form($form);
@@ -451,7 +463,7 @@ function googleanalytics_admin_settings_form_validate($form, &$form_state) {
   // Replace all type of dashes (n-dash, m-dash, minus) with the normal dashes.
   $form_state['values']['googleanalytics_account'] = str_replace(array('–', '—', '−'), '-', $form_state['values']['googleanalytics_account']);
 
-  if (!preg_match('/^UA-\d{4,}-\d+$/', $form_state['values']['googleanalytics_account'])) {
+  if (!preg_match('/^UA-\d+-\d+$/', $form_state['values']['googleanalytics_account'])) {
     form_set_error('googleanalytics_account', t('A valid Google Analytics Web Property ID is case sensitive and formatted like UA-xxxxxxx-yy.'));
   }
 
@@ -686,7 +698,7 @@ function _googleanalytics_extract_create_field_values($string) {
     $values[$name] = $value;
   }
 
-  return $values;
+  return _googleanalytics_convert_form_value_data_types($values);
 }
 
 /**
@@ -730,7 +742,7 @@ function _googleanalytics_validate_create_field_name($name) {
  *   The error message if the specified value is invalid, NULL otherwise.
  */
 function _googleanalytics_validate_create_field_value($value) {
-  if (empty($value)) {
+  if (!is_bool($value) && empty($value)) {
     return t('A value is required.');
   }
   if (drupal_strlen($value) > 255) {
@@ -752,10 +764,59 @@ function _googleanalytics_validate_create_field_value($value) {
  *    - Values are separated by a carriage return.
  *    - Each value is in the format "name|value" or "value".
  */
-function _googleanalytics_get_key_values_string($values) {
+function _googleanalytics_get_name_value_string($values) {
   $lines = array();
   foreach ($values as $name => $value) {
+    // Convert data types.
+    // @todo: #2251377: Json utility class serializes boolean values to incorrect data type
+    if (is_bool($value)) {
+      $value = ($value) ? 'true' : 'false';
+    }
+
     $lines[] = "$name|$value";
   }
   return implode("\n", $lines);
+}
+
+/**
+ * Prepare form data types for Json conversion.
+ *
+ * @param array $values
+ *   Array of name/value pairs.
+ *
+ * @return array
+ *   Array of name/value pairs with casted data types.
+ */
+function _googleanalytics_convert_form_value_data_types($values) {
+
+  foreach ($values as $name => $value) {
+    // Convert data types.
+    // @todo: #2251377: Json utility class serializes boolean values to incorrect data type
+    $match = drupal_strtolower($value);
+    if ($match == 'true') {
+      $value = TRUE;
+    }
+    elseif ($match == 'false') {
+      $value = FALSE;
+    }
+
+    // Convert other known fields.
+    // @todo: #2251343: Json utility class serializes numeric values to incorrect data type
+    switch ($name) {
+      case 'sampleRate':
+        // Float
+        settype($value, 'float');
+        break;
+
+      case 'siteSpeedSampleRate':
+      case 'cookieExpires':
+        // Integer
+        settype($value, 'integer');
+        break;
+    }
+
+    $values[$name] = $value;
+  }
+
+  return $values;
 }

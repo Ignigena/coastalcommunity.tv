@@ -1,6 +1,116 @@
 <?php
 
 /**
+ * Implements hook_menu().
+ */
+function mediaplayer_menu() {
+  $items['admin/config/bethel/mediaplayer'] = array(
+    'title' => 'Media Player',
+    'description' => 'Configure media player page.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mediaplayer_admin'),
+    'access arguments' => array('administer bethel settings'),
+    'type' => MENU_NORMAL_ITEM,
+   );
+   
+   $items['media'] = array(
+    'title' => 'Media Player',
+    'page callback' => 'mediaplayer_page',
+    'access callback' => TRUE,
+  );
+  
+  $items['media/%'] = array(
+    'page callback' => 'mediaplayer_page',
+    'page arguments' => array(1),
+    'access callback' => TRUE,
+  );
+   
+   return $items;
+}
+
+function mediaplayer_admin() {
+  $form = array();
+  
+  $form['mediaplayer_podcast'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Podcast URL'),
+    '#default_value' => variable_get('mediaplayer_podcast', '')
+  );
+
+  return system_settings_form($form);
+}
+
+function mediaplayer_page($series = NULL, $video = NULL) {
+  $base_query = 'SELECT n.title, fv.field_video_video_url AS video_url, fn.realname AS speaker, fb.body_value AS body, series.title AS series, series.nid AS sid FROM {node} n LEFT JOIN {field_data_field_video} fv ON n.nid = fv.entity_id LEFT JOIN {field_data_body} fb ON n.nid = fb.entity_id LEFT JOIN {field_data_field_speaker} fs ON n.nid = fs.entity_id LEFT JOIN {realname} fn ON fs.field_speaker_target_id = fn.uid LEFT JOIN {field_data_field_related_event} fe ON n.nid = fe.entity_id LEFT JOIN {node} series ON fe.field_related_event_target_id = series.nid ';
+  
+  if ($series && $video) {
+    $result = db_query($base_query . 'WHERE ((n.nid = :video) AND (n.status = :status) AND (n.type = :type) AND (fv.field_video_video_url IS NOT NULL) AND (series.nid = :series)) ORDER BY n.created DESC LIMIT 1', array(':video' => $video, ':status' => 1, ':type' => 'media', ':series' => $series));
+  } else if ($series) {
+    $result = db_query($base_query . 'WHERE ((n.status = :status) AND (n.type = :type) AND (fv.field_video_video_url IS NOT NULL) AND (series.nid = :series)) ORDER BY n.created DESC LIMIT 1', array(':status' => 1, ':type' => 'media', ':series' => $series));
+  } else {
+    $result = db_query($base_query . 'WHERE ((n.status = :status) AND (n.type = :type) AND (fv.field_video_video_url IS NOT NULL)) ORDER BY n.created DESC LIMIT 1', array(':status' => 1, ':type' => 'media'));
+  }
+  
+  $markup = '';
+  
+  foreach ($result as $record) {
+    drupal_set_title($record->title . ' ' . $record->series);
+    $vimeo_id = explode('/', $record->video_url);
+    $vimeo_id = $vimeo_id[count($vimeo_id)-1];    
+
+    $markup .= '<iframe src="//player.vimeo.com/video/' . $vimeo_id . '?badge=0&byline=0&portrait=0&color=00aeef" width="675" height="380" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+    $markup .= '<h2>' . $record->series . '</h2>';
+    $markup .= '<div class="video"><h4>' . $record->title . '</h4>';
+    $markup .= '<span class="author">' . $record->speaker . '</span>';
+    $markup .= '<div class="body">' . $record->body . '</div></div>';
+    
+    $markup .= '<div class="recommended"><h3>Recommended series...</h3>';
+    
+    $recommended_query = db_query('SELECT n.nid, n.title, f.uri AS image, fd.field_dates_value AS date FROM {field_data_field_related_event} fe LEFT JOIN {node} n ON fe.field_related_event_target_id = n.nid LEFT JOIN {field_data_field_dates} fd ON n.nid = fd.entity_id LEFT JOIN {field_data_field_image} fi ON n.nid = fi.entity_id LEFT JOIN {file_managed} f ON fi.field_image_fid = f.fid WHERE ( (fe.bundle = :bundle) AND (n.status = :status) AND (n.type = :type) AND (n.nid != :nid)) GROUP BY n.title ORDER BY fd.field_dates_value DESC LIMIT 3', array(':bundle' => 'media', ':status' => 1, ':type' => 'events', ':nid' => $record->sid));
+
+    $recommended = array();
+    
+    foreach ($recommended_query as $series) {
+      array_push($recommended, array('data' => '<a href="/media/' . $series->nid . '">' . theme_image_style(array(
+        'style_name' => 'event-thumb',
+        'path' => $series->image,
+        'width' => null,
+        'height' => null
+      )) . '<br />' . $series->title . '</a><br />' . date('F Y', strtotime($series->date))));
+    }
+    
+    $markup .= theme_item_list(array(
+      'items' => $recommended,
+      'title' => '',
+      'type' => 'ul',
+      'attributes' => array()
+    ));
+    
+    $markup .= '</div><div class="related"><h3>More from this series</h3>';
+    
+    $more_series = db_query('SELECT n.nid, n.title, fn.realname AS speaker FROM {field_data_field_related_event} fe LEFT JOIN {node} n ON n.nid = fe.entity_id LEFT JOIN {field_data_field_speaker} fs ON n.nid = fs.entity_id LEFT JOIN {realname} fn ON fs.field_speaker_target_id = fn.uid
+WHERE fe.field_related_event_target_id = :nid ORDER BY n.created DESC', array(':nid' => $record->sid));
+
+    $related = array();
+    
+    foreach ($more_series as $video) {
+      array_push($related, array('data' => '<a href="/media/' . $record->sid . '/' . $video->nid . '">' . $video->title . '</a><br />' . $video->speaker));
+    }
+    
+    $markup .= theme_item_list(array(
+      'items' => $related,
+      'title' => '',
+      'type' => 'ul',
+      'attributes' => array()
+    ));
+    
+    $markup .= '</div>';
+  }
+  
+  return array('#markup' => $markup);
+}
+
+/**
  * Implements hook_block_info().
  */
 function mediaplayer_block_info() {

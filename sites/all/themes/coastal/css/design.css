@@ -810,7 +810,8 @@ ul.draggableviews-processed {
 }
 
 @media (max-width: 568px) {
-  #block-views-location-block .view-display-id-block_1 .view-content {
+  .front #block-locations-campus-locations .location-bar p {
+    float: none;
     font-size: 16px;
   }
 }
@@ -850,11 +851,10 @@ ul.draggableviews-processed {
 }
 
 @media (max-width: 568px) {
-  .front #block-views-location-block .view-display-id-block_1 a.get-directions,
   .front #block-locations-campus-locations .location-bar .get-directions a {
     margin-right: 5px;
     margin-left: 5px;
-    top: -1px;
+    top: -6px;
   }
 }
 

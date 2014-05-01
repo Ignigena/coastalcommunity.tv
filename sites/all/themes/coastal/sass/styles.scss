@@ -745,6 +745,16 @@ div.jp-audio {
       iframe {
         float: left;
         margin-right: 10px;
+        max-width: 100%;
+        @media (max-width: $break-desktop) {
+          width: 100%;
+          margin-right: 0;
+          float: none;
+          margin-bottom: -5px;
+        }
+        @media (max-width: $break-mobile) {
+          height: 200px;
+        }
       }
       h2 {
         @include title-bar-block;
@@ -752,13 +762,28 @@ div.jp-audio {
       }
       .video {
         height: 330px;
+        @media (max-width: $break-desktop) {
+          height: auto;
+          padding: 0 20px 10px 20px;
+        }
         h4 { margin-bottom: 0; }
         .author { font-style: italic; }
       }
       .recommended {
         background: #000;
         width: 675px;
+        max-width: 100%;
         margin-right: 10px;
+        @media (max-width: $break-desktop) {
+          width: 100%;
+          margin-right: 0;
+          margin-bottom: -5px;
+        }
+        @media (max-width: $break-mobile) {
+          width: auto;
+          margin-right: 0;
+          display: none;
+        }
         float: left;
         h3 {
           color: white;
@@ -769,11 +794,17 @@ div.jp-audio {
           margin: 0;
           list-style: none;
           color: #8d8d8d;
+          @media (max-width: $break-desktop) {
+            padding-left: 15px;
+          }
           li {
             float: left;
             text-align: center;
             margin-right: 5px;
             margin-bottom: 25px;
+            @media (max-width: $break-desktop) {
+              margin-right: 15px;
+            }
             a {
               color: #8d8d8d;
               font-size: 18px;
@@ -790,14 +821,24 @@ div.jp-audio {
         padding: 10px;
         background: #333;
         color: #adadad;
+        @media (max-width: $break-desktop) {
+          min-height: initial;
+        }
         h3 {
           @include title-bar-block;
           @include dark-gradient;
           font-size: 18px;
           margin: -10px -10px 10px;
+          @media (max-width: $break-desktop) {
+            clear: both;
+          }
         }
         ul {
+          margin: 0;
           list-style: none;
+          @media (max-width: $break-desktop) {
+            padding-left: 10px;
+          }
           li {
             margin-bottom: 15px;
             font-style: italic;

@@ -60,7 +60,7 @@ function mediaplayer_page($series = NULL, $video = NULL) {
 
     $markup .= '<iframe src="//player.vimeo.com/video/' . $vimeo_id . '?badge=0&byline=0&portrait=0&color=00aeef" width="675" height="380" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
     $markup .= '<h2>' . $record->series . '</h2>';
-    $markup .= '<div class="video"><h4>' . $record->title . '</h4>';
+    $markup .= '<div class="video"><h4>' . _mediaplayer_filter_video_title($record->title, $record->series) . '</h4>';
     $markup .= '<span class="author">' . $record->speaker . '</span>';
     $markup .= '<div class="body">' . $record->body . '</div></div>';
     
@@ -94,7 +94,7 @@ WHERE fe.field_related_event_target_id = :nid ORDER BY n.created DESC', array(':
     $related = array();
     
     foreach ($more_series as $video) {
-      array_push($related, array('data' => '<a href="/media/' . $record->sid . '/' . $video->nid . '">' . $video->title . '</a><br />' . $video->speaker));
+      array_push($related, array('data' => '<a href="/media/' . $record->sid . '/' . $video->nid . '">' . _mediaplayer_filter_video_title($video->title, $record->series) . '</a><br />' . $video->speaker));
     }
     
     $markup .= theme_item_list(array(
@@ -108,6 +108,16 @@ WHERE fe.field_related_event_target_id = :nid ORDER BY n.created DESC', array(':
   }
   
   return array('#markup' => $markup);
+}
+
+function _mediaplayer_filter_video_title($video_title, $series_title) {
+  if (!$series_title)
+    return $video_title;
+  
+  $series_title = str_ireplace('series', '', $series_title);
+  $video_title = str_ireplace(trim($series_title), '', $video_title);
+  
+  return trim($video_title, ' -:');
 }
 
 /**

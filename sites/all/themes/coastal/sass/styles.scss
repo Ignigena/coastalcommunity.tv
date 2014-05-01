@@ -11,7 +11,7 @@ body {
   &.html.logged-in.navbar-administration.navbar-tray-open.navbar-fixed.navbar-horizontal {
     padding-top: 79px !important;
   }
-  &.navbar-fixed-top {
+  .navbar-fixed-top {
     margin: 0 !important;
   }
   @media (max-width: $break-tablet) {

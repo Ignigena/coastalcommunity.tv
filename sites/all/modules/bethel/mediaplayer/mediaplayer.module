@@ -111,7 +111,7 @@ WHERE fe.field_related_event_target_id = :nid ORDER BY n.created DESC', array(':
 }
 
 function _mediaplayer_filter_video_title($video_title, $series_title) {
-  if (!$series_title)
+  if (!$series_title || $video_title == $series_title)
     return $video_title;
   
   $series_title = str_ireplace('series', '', $series_title);

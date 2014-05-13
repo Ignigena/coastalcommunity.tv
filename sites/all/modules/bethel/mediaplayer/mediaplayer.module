@@ -54,7 +54,7 @@ function mediaplayer_page($series = NULL, $video = NULL) {
   $markup = '';
   
   foreach ($result as $record) {
-    drupal_set_title($record->title . ' ' . $record->series);
+    drupal_set_title($record->title . ' | ' . $record->series);
     $vimeo_id = explode('/', $record->video_url);
     $vimeo_id = $vimeo_id[count($vimeo_id)-1];    
 

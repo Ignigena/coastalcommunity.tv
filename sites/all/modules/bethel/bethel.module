@@ -106,7 +106,7 @@ function bethel_html_head_alter(&$head_elements) {
 }
 
 function _bethel_api_query($query) {
-  $api_response = drupal_http_request('http://my.bethel.io/' . $query);
+  $api_response = drupal_http_request('https://my.bethel.io/' . $query);
   if (!isset($api_response->error)) {
     return json_decode($api_response->data);
   } else {

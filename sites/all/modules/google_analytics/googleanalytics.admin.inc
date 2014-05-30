@@ -81,6 +81,14 @@ function googleanalytics_admin_settings_form($form_state) {
     '#type' => 'textarea',
     '#default_value' => variable_get('googleanalytics_cross_domains', ''),
     '#description' => t('If you selected "Multiple top-level domains" above, enter all related top-level domains. Add one domain per line. By default, the data in your reports only includes the path and name of the page, and not the domain name. For more information see section <em>Show separate domain names</em> in <a href="@url">Tracking Multiple Domains</a>.', array('@url' => 'https://support.google.com/analytics/answer/1034342')),
+    '#states' => array(
+      'enabled' => array(
+        ':input[name="googleanalytics_domain_mode"]' => array('value' => '2'),
+      ),
+      'required' => array(
+        ':input[name="googleanalytics_domain_mode"]' => array('value' => '2'),
+      ),
+    ),
   );
 
   // Page specific visibility configurations.
@@ -206,6 +214,15 @@ function googleanalytics_admin_settings_form($form_state) {
     '#default_value' => variable_get('googleanalytics_trackfiles_extensions', GOOGLEANALYTICS_TRACKFILES_EXTENSIONS),
     '#description' => t('A file extension list separated by the | character that will be tracked as download when clicked. Regular expressions are supported. For example: !extensions', array('!extensions' => GOOGLEANALYTICS_TRACKFILES_EXTENSIONS)),
     '#maxlength' => 255,
+    '#states' => array(
+      'enabled' => array(
+        ':input[name="googleanalytics_trackfiles"]' => array('checked' => TRUE),
+      ),
+      # Note: Form required marker is not visible as title is invisible.
+      'required' => array(
+        ':input[name="googleanalytics_trackfiles"]' => array('checked' => TRUE),
+      ),
+    ),
   );
   $form['tracking']['linktracking']['googleanalytics_tracklinkid'] = array(
     '#type' => 'checkbox',
@@ -255,13 +272,12 @@ function googleanalytics_admin_settings_form($form_state) {
     '#default_value' => variable_get('googleanalytics_site_search', FALSE),
     '#disabled' => (module_exists('search') ? FALSE : TRUE),
   );
-  /* @todo: not supported, https://support.google.com/analytics/bin/answer.py?hl=en&hlrm=de&answer=2795983
   $form['tracking']['search_and_advertising']['googleanalytics_trackadsense'] = array(
     '#type' => 'checkbox',
     '#title' => t('Track AdSense ads'),
     '#description' => t('If checked, your AdSense ads will be tracked in your Google Analytics account.'),
     '#default_value' => variable_get('googleanalytics_trackadsense', FALSE),
-  );*/
+  );
   $form['tracking']['search_and_advertising']['googleanalytics_trackdoubleclick'] = array(
     '#type' => 'checkbox',
     '#title' => t('Track display features'),
@@ -387,7 +403,6 @@ function googleanalytics_admin_settings_form($form_state) {
     );
   }
 
-  // @todo: Update urls once they are available.
   $form['advanced']['codesnippet'] = array(
     '#type' => 'fieldset',
     '#title' => t('Custom JavaScript code'),
@@ -418,17 +433,6 @@ function googleanalytics_admin_settings_form($form_state) {
     '#description' => t("Code in this textarea will be added <strong>after</strong> <code>ga('send', 'pageview');</code>. This is useful if you'd like to track a site in two accounts."),
   );
 
-  $form['advanced']['googleanalytics_js_scope'] = array(
-    '#type' => 'select',
-    '#title' => t('JavaScript scope'),
-    '#description' => t('Google recommends adding the external JavaScript files to the header for performance reasons. If <em>Multiple top-level domains</em> has been selected, this setting will be forced to header.'),
-    '#options' => array(
-      'footer' => t('Footer'),
-      'header' => t('Header'),
-    ),
-    '#default_value' => variable_get('googleanalytics_js_scope', 'header'),
-    '#disabled' => (variable_get('googleanalytics_domain_mode', 0) == 2) ? TRUE : FALSE,
-  );
   $form['advanced']['googleanalytics_debug'] = array(
     '#type' => 'checkbox',
     '#title' => t('Enable debugging'),
@@ -477,6 +481,10 @@ function googleanalytics_admin_settings_form_validate($form, &$form_state) {
   if ($form_state['values']['googleanalytics_domain_mode'] == 2 && empty($form_state['values']['googleanalytics_cross_domains'])) {
     form_set_error('googleanalytics_cross_domains', t('A list of top-level domains is required if <em>Multiple top-level domains</em> has been selected.'));
   }
+  // Disallow empty list of download file extensions.
+  if ($form_state['values']['googleanalytics_trackfiles'] && empty($form_state['values']['googleanalytics_trackfiles_extensions'])) {
+    form_set_error('googleanalytics_trackfiles_extensions', t('List of download file extensions cannot empty.'));
+  }
   // Clear obsolete local cache if cache has been disabled.
   if (empty($form_state['values']['googleanalytics_cache']) && $form['advanced']['googleanalytics_cache']['#default_value']) {
     googleanalytics_clear_js_cache();
@@ -494,11 +502,6 @@ function googleanalytics_admin_settings_form_validate($form, &$form_state) {
   }
   if (preg_match('/(.*)<\/?script(.*)>(.*)/i', $form_state['values']['googleanalytics_codesnippet_after'])) {
     form_set_error('googleanalytics_codesnippet_after', t('Do not include the &lt;script&gt; tags in the javascript code snippets.'));
-  }
-
-  // Header section must be forced for multiple top-level domains.
-  if ($form_state['values']['googleanalytics_domain_mode'] == 2) {
-    $form_state['values']['googleanalytics_js_scope'] = 'header';
   }
 }
 
